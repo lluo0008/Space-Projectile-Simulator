@@ -1,0 +1,4 @@
+/home/lily/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/202.6948.80/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/lily/CMPE320/ProjectileSimulation
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/lily/CMPE320/ProjectileSimulation/cmake-build-debug
