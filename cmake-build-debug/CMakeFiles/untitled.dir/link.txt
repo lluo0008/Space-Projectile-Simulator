@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/untitled.dir/main.cpp.o CMakeFiles/untitled.dir/RungeKutta.cpp.o CMakeFiles/untitled.dir/Projectile.cpp.o CMakeFiles/untitled.dir/Helper.cpp.o CMakeFiles/untitled.dir/Environment.cpp.o CMakeFiles/untitled.dir/EnvironmentException.cpp.o  -o untitled 
