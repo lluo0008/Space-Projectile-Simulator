@@ -165,8 +165,8 @@
     <None Include="imgui\examples\README.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\Downloads\cannon.png" />
     <Image Include="background.png" />
-    <Image Include="cannon.png" />
     <Image Include="Jupiter.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

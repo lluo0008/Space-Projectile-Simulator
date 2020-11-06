@@ -61,10 +61,10 @@
     <Image Include="background.png">
       <Filter>sources</Filter>
     </Image>
-    <Image Include="cannon.png">
+    <Image Include="Jupiter.png">
       <Filter>sources</Filter>
     </Image>
-    <Image Include="Jupiter.png">
+    <Image Include="..\..\..\Downloads\cannon.png">
       <Filter>sources</Filter>
     </Image>
   </ItemGroup>

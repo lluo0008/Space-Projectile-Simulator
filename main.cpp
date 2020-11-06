@@ -57,8 +57,8 @@ int main(int, char**)
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
+    //ImGui::StyleColorsDark();
+    ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hwnd);
@@ -107,15 +107,14 @@ int main(int, char**)
         ImGui::NewFrame();
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
+        //if (show_demo_window)
+            //ImGui::ShowDemoWindow(&show_demo_window);
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
-            static int i = 0;
+            static int i = 7;
             static int counter = 0;
 
-            //ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
             int image_width = 0;
             int image_height = 0;
             ID3D11ShaderResourceView* my_texture = NULL;
@@ -125,39 +124,55 @@ int main(int, char**)
             ImGui::SetNextWindowPos(ImVec2(-10, -10));
             ImGui::SetNextWindowSize(ImVec2(800, 500), 0);
             ImGui::Begin("Projectile Simulator", NULL, 1);
+
+            //display space background
             ImGui::Image((void*)my_texture, ImVec2(800, 500));
 
+            //display jupiter
             ret = LoadTextureFromFile("Jupiter.png", &my_texture, &image_width, &image_height);
             IM_ASSERT(ret);
             ImGui::SetCursorPos(ImVec2(0, 400));
             ImGui::Image((void*)my_texture, ImVec2(750, image_height));
 
+            ImGui::SetCursorPos(ImVec2(350, 440));
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(0,0,0)));
+            ImGui::Text("Jupiter");
+            ImGui::PopStyleColor();
+
+            //display cannon
+            ret = LoadTextureFromFile("cannon.png", &my_texture, &image_width, &image_height);
+            IM_ASSERT(ret);
+            ImGui::SetCursorPos(ImVec2(0, 350));
+            ImGui::Image((void*)my_texture, ImVec2(image_width/2, image_height/2));
+
             //ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            //ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            //ImGui::Checkbox("Another Window", &show_another_window);
 
             //Wind Control
-            ImGui::SliderInt("Wind (km/h)", &i, -10, 10);            // Edit wind using a slider from -10 to 10
-            //ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+            ImGui::SetCursorPos(ImVec2(410, 40));
+            ImGui::PushItemWidth(230);
+            ImGui::SliderInt("Wind(m/s)", &i, -10, 10);            // Edit wind using a slider from -10 to 10
+            ImGui::PopItemWidth();
 
-            //if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                //counter++;
-            //ImGui::SameLine();
-            //ImGui::Text("counter = %d", counter);
+            //Home button
+            ImGui::SetCursorPos(ImVec2(40, 40));
+            ImGui::Button("Home", ImVec2(75, 30));
 
-            //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            //Back button
+            ImGui::SetCursorPos(ImVec2(40, 80));
+            ImGui::Button("Back", ImVec2(75, 30));
+
+            //Launch button
+            ImGui::SetCursorPos(ImVec2(630, 80));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(225, 44, 3)));
+            ImGui::Button("LAUNCH", ImVec2(85, 40));
+            ImGui::PopStyleColor();
+
+            //Compare button
+            ImGui::SetCursorPos(ImVec2(640, 130));
+            ImGui::Button("Compare", ImVec2(75, 30));
+
             ImGui::End();
         }
-
-        // 3. Show another simple window.
-        //if (show_another_window)
-        //{
-        //    ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-        //    ImGui::Text("Hello from another window!");
-        //    if (ImGui::Button("Close Me"))
-        //        show_another_window = false;
-        //    ImGui::End();
-        //}
 
         // Rendering
         ImGui::Render();
