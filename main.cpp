@@ -2,6 +2,8 @@
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
+
+
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
@@ -9,6 +11,10 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <tchar.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"         // NULL, malloc, free, atoi
+
 
 // Data
 static ID3D11Device*            g_pd3dDevice = NULL;
@@ -22,6 +28,7 @@ void CleanupDeviceD3D();
 void CreateRenderTarget();
 void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+bool LoadTextureFromFile(const char*, ID3D11ShaderResourceView**, int*, int*);
 
 // Main code
 int main(int, char**)
@@ -30,7 +37,7 @@ int main(int, char**)
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
     ::RegisterClassEx(&wc);
-    HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("Dear ImGui DirectX11 Example"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
+    HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("Physics Simulator"), WS_OVERLAPPEDWINDOW, 100, 100, 750, 500, NULL, NULL, wc.hInstance, NULL);
 
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
@@ -101,31 +108,72 @@ int main(int, char**)
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
-            static float f = 0.0f;
-            static int counter = 0;
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+			int my_image_width = 0;
+			int my_image_height = 0;
+			ID3D11ShaderResourceView* my_texture = NULL;
+			bool ret = LoadTextureFromFile("star.JPG", &my_texture, &my_image_width, &my_image_height);
+			IM_ASSERT(ret);
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
+			ImGui::SetNextWindowPos(ImVec2(-10, -10));
+			ImGui::SetNextWindowSize(ImVec2(750, 510), 0);
 
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+			ImGui::Begin("physics sim", NULL, 1);
+			ImGui::Image((void*)my_texture, ImVec2(750, 470));
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
+			ret = LoadTextureFromFile("jupiter.PNG", &my_texture, &my_image_width, &my_image_height);
+			IM_ASSERT(ret);
 
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
+			ImGui::SetCursorPos(ImVec2(0, 420));
+			ImGui::Image((void*)my_texture, ImVec2(750, my_image_height));
+
+			ret = LoadTextureFromFile("cannon.PNG", &my_texture, &my_image_width, &my_image_height);
+			IM_ASSERT(ret);
+
+			ImGui::SetCursorPos(ImVec2(15, 355));
+			ImGui::Image((void*)my_texture, ImVec2(my_image_width/1.5, my_image_height/1.5));
+
+			ImGui::SetCursorPos(ImVec2(25, 30));
+			ImGui::Button("Home", ImVec2(75, 30));
+
+			ImGui::SetCursorPos(ImVec2(650, 400));
+			ImGui::Button("Next", ImVec2(75, 30));
+
+			ret = LoadTextureFromFile("projectile1.png", &my_texture, &my_image_width, &my_image_height);
+			IM_ASSERT(ret);
+
+			ImGui::SetCursorPos(ImVec2(500, 150));
+			ImGui::ImageButton(my_texture, ImVec2(100, 100));
+
+			ImGui::SetCursorPos(ImVec2(500, 275));
+			ImGui::Text("Properties: \n - ... \n - ...");
+
+			ret = LoadTextureFromFile("projectile2.png", &my_texture, &my_image_width, &my_image_height);
+			IM_ASSERT(ret);
+
+			ImGui::SetCursorPos(ImVec2(325, 150));
+			ImGui::ImageButton(my_texture, ImVec2(100, 100));
+
+			ImGui::SetCursorPos(ImVec2(325, 275));
+			ImGui::Text("Properties: \n - ... \n - ...");
+
+			ret = LoadTextureFromFile("projectile3.png", &my_texture, &my_image_width, &my_image_height);
+			IM_ASSERT(ret);
+
+			ImGui::SetCursorPos(ImVec2(150, 150));
+			ImGui::ImageButton(my_texture, ImVec2(100, 100));
+
+			ImGui::SetCursorPos(ImVec2(150, 275));
+			ImGui::Text("Properties: \n - ... \n - ...");
+
+
+
+
+
+			ImGui::End();
+			
         }
 
         // 3. Show another simple window.
@@ -161,6 +209,52 @@ int main(int, char**)
 }
 
 // Helper functions
+
+bool LoadTextureFromFile(const char* filename, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height)
+{
+	// Load from disk into a raw RGBA buffer
+	int image_width = 0;
+	int image_height = 0;
+	unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
+	if (image_data == NULL)
+		return false;
+
+	// Create texture
+	D3D11_TEXTURE2D_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+	desc.Width = image_width;
+	desc.Height = image_height;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.SampleDesc.Count = 1;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags = 0;
+
+	ID3D11Texture2D* pTexture = NULL;
+	D3D11_SUBRESOURCE_DATA subResource;
+	subResource.pSysMem = image_data;
+	subResource.SysMemPitch = desc.Width * 4;
+	subResource.SysMemSlicePitch = 0;
+	g_pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
+
+	// Create texture view
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	ZeroMemory(&srvDesc, sizeof(srvDesc));
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = desc.MipLevels;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	g_pd3dDevice->CreateShaderResourceView(pTexture, &srvDesc, out_srv);
+	pTexture->Release();
+
+	*out_width = image_width;
+	*out_height = image_height;
+	stbi_image_free(image_data);
+
+	return true;
+}
 
 bool CreateDeviceD3D(HWND hWnd)
 {
