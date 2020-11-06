@@ -106,11 +106,7 @@ int main(int, char**)
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        //if (show_demo_window)
-            //ImGui::ShowDemoWindow(&show_demo_window);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+        // We use a Begin/End pair to created a named window.
         {
             static int i = 7;
             static int counter = 0;
@@ -144,8 +140,6 @@ int main(int, char**)
             IM_ASSERT(ret);
             ImGui::SetCursorPos(ImVec2(0, 350));
             ImGui::Image((void*)my_texture, ImVec2(image_width/2, image_height/2));
-
-            //ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 
             //Wind Control
             ImGui::SetCursorPos(ImVec2(410, 40));
