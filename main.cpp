@@ -116,29 +116,34 @@ int main(int, char**)
             static int counter = 0;
 
             //ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-            int background_width = 0;
-            int background_height = 0;
-            ID3D11ShaderResourceView* background_texture = NULL;
-            bool ret = LoadTextureFromFile("background.png", &background_texture, &background_width, &background_height);
+            int image_width = 0;
+            int image_height = 0;
+            ID3D11ShaderResourceView* my_texture = NULL;
+            bool ret = LoadTextureFromFile("background.png", &my_texture, &image_width, &image_height);
             IM_ASSERT(ret);
 
             ImGui::SetNextWindowPos(ImVec2(-10, -10));
             ImGui::SetNextWindowSize(ImVec2(800, 500), 0);
             ImGui::Begin("Projectile Simulator", NULL, 1);
-            ImGui::Image((void*)background_texture, ImVec2(800, 500));
+            ImGui::Image((void*)my_texture, ImVec2(800, 500));
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
+            ret = LoadTextureFromFile("Jupiter.png", &my_texture, &image_width, &image_height);
+            IM_ASSERT(ret);
+            ImGui::SetCursorPos(ImVec2(0, 400));
+            ImGui::Image((void*)my_texture, ImVec2(750, image_height));
+
+            //ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+            //ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            //ImGui::Checkbox("Another Window", &show_another_window);
 
             //Wind Control
             ImGui::SliderInt("Wind (km/h)", &i, -10, 10);            // Edit wind using a slider from -10 to 10
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+            //ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
+            //if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                //counter++;
+            //ImGui::SameLine();
+            //ImGui::Text("counter = %d", counter);
 
             //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();

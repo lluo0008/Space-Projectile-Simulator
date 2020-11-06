@@ -24,6 +24,9 @@
     <ClInclude Include="imgui\backends\imgui_impl_dx11.h">
       <Filter>sources</Filter>
     </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>sources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -53,5 +56,16 @@
     <None Include="imgui\misc\natvis\imgui.natvis">
       <Filter>sources</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="background.png">
+      <Filter>sources</Filter>
+    </Image>
+    <Image Include="cannon.png">
+      <Filter>sources</Filter>
+    </Image>
+    <Image Include="Jupiter.png">
+      <Filter>sources</Filter>
+    </Image>
   </ItemGroup>
 </Project>
