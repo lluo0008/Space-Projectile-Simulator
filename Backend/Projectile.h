@@ -51,7 +51,7 @@ public:
          * @param current_time the current time
          * @return the array of time and position values
          */
-        std::vector<double> updatePosition(double current_time, double DELTA_T, Environment env);
+        //std::vector<double> updatePosition(double current_time, double DELTA_T, Environment env);
 
 
         /**
@@ -76,11 +76,10 @@ public:
          * gets the creation time of the particle in seconds
          * @return the creation time
          */
-        public double getCreationTime();
+        double getCreationTime();
 
         //function returns false
-        @Override
-        public boolean update(double time) {
+        bool update(double time) {
             return false;
         } //end update
 

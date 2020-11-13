@@ -4,6 +4,8 @@
  */
 
 #include "Environment.h"
+#include "EnvironmentException.h" 
+
 using namespace std;
 double wind_speed;
 
@@ -28,5 +30,3 @@ void setWind_speed(double wind){
         //convert to m/s
         wind_speed = wind * 1000. / 3600.;
 } //end setWind_speed
-
-}
