@@ -4,10 +4,12 @@
  */
 
 #include "Environment.h"
-#include "EnvironmentException.h" 
-
 using namespace std;
 double wind_speed;
+
+EnvironmentException::EnvironmentException(string message) {
+    message = "Warning: environment exception";
+}
 
 Environment::Environment(double wind){
         wind_speed = wind;

@@ -6,7 +6,6 @@
 #ifndef UNTITLED_ENVIRONMENT_H
 #define UNTITLED_ENVIRONMENT_H
 
-
 class Environment {
 public:
 
@@ -38,3 +37,22 @@ private:
 
 
 #endif //UNTITLED_ENVIRONMENT_H
+
+#ifndef UNTITLED_ENVIRONMENTEXCEPTION_H
+#define UNTITLED_ENVIRONMENTEXCEPTION_H
+#include "iostream"
+
+using namespace std;
+
+class EnvironmentException {
+public:
+    /**
+    * exception for environment object
+    * @param message exception message
+    */
+    EnvironmentException(string message);
+
+};
+
+
+#endif //UNTITLED_ENVIRONMENTEXCEPTION_H

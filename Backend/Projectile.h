@@ -4,11 +4,11 @@
 
 #ifndef UNTITLED_PROJECTILE_H
 #define UNTITLED_PROJECTILE_H
+#include <vector>
 
+using namespace std;
 
-#include "ODESystem.h"
-
-class Projectile: ODESystem {
+class Projectile {
 public:
 
         /**
