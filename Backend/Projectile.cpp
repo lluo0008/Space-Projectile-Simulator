@@ -7,7 +7,6 @@
 
 #include "Projectile.h"
 #include "RungeKutta.h"
-#include "Helper.h"
 #include <math.h>
 #include "Environment.h"
 #include <vector>

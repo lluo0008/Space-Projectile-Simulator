@@ -142,16 +142,12 @@
   <ItemGroup>
     <ClCompile Include="backend_main.cpp" />
     <ClCompile Include="Environment.cpp" />
-    <ClCompile Include="EnvironmentException.cpp" />
-    <ClCompile Include="Helper.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="RungeKutta.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Environment.h" />
-    <ClInclude Include="EnvironmentException.h" />
     <ClInclude Include="Helper.h" />
-    <ClInclude Include="ODESystem.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="ProjectileManager.h">
       <DeploymentContent>false</DeploymentContent>
