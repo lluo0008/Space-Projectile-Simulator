@@ -26,7 +26,7 @@ public:
          */
         //Projectile(double m, double dens, double dragC, double rad, enum Colors c, struct launchParams param);
 
-        Projectile(enum Size projectileSize, enum Colors c);
+        Projectile(Size projectileSize, Colors c);
 
         /**
          * Generates the current x and y velocities considering wind.
@@ -43,7 +43,7 @@ public:
         /**
         * sets the current projectile data
         */
-        void setData(struct ProjectileData data);
+        void setData(ProjectileData data);
 
         /**
         * checks if the projectile is active
@@ -82,10 +82,10 @@ private:
     double drag_coeff;
     double radius;
     bool active;
-    struct launchParams launchedWith;
-    enum Colors color;
-    struct projectileData data;
-    enum Size size;
+    launchParams launchedWith;
+    Colors color;
+    projectileData data;
+    Size size;
 
     /**
      * gets the position of the particle, in x-y coordinates
