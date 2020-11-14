@@ -142,17 +142,23 @@
   <ItemGroup>
     <ClCompile Include="backend_main.cpp" />
     <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="LargeProjectile.cpp" />
+    <ClCompile Include="MediumProjectile.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="RungeKutta.cpp" />
+    <ClCompile Include="SmallProjectile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Environment.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="LargeProjectile.h" />
+    <ClInclude Include="MediumProjectile.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="ProjectileManager.h">
       <DeploymentContent>false</DeploymentContent>
     </ClInclude>
     <ClInclude Include="RungeKutta.h" />
+    <ClInclude Include="SmallProjectile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

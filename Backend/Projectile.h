@@ -1,6 +1,10 @@
-//
-// Created by lily on 10/26/20.
-//
+/**
+*
+* Created by lily on 10/26/20.
+* revised: 2020-11-13
+*
+**/
+
 
 #ifndef UNTITLED_PROJECTILE_H
 #define UNTITLED_PROJECTILE_H
@@ -12,33 +16,39 @@ class Projectile {
 public:
 
         /**
-         * Instantiates a particle object
-         * @param starting_mass initial mass of the particle
-         * @param creation_time time at creationvelocity
-         * @param position position
-         * @param velocity velocity
-         * @param density density of the particle
-         * @param drag_coeff drag coefficient of the particle
-         * @param burn_rate burn rate of the particle
-         * @param system_size system size
-         * @param starting_radius starting radius of the particle
-         * @param lifetime particle's lifetime
+         * Instantiates a projectile object
+         * @param mass the mass of the projectile
+         * @param density the density of the projectile
+         * @param drag_coeff the drag coefficient of the projectile
+         * @param radius the radius of the projectile
+         * @param color enum storing a random selection of colours
+         * @param launchParams struct storing the launch angle, launch velocity, and windspeed
          */
-        Projectile(double starting_mass, double creation_time, std::vector<double> position, std::vector<double> velocity,
-                   double density, double drag_coeff, int system_size, double radius, double transitTime);
-
-        /**
-         * Provides the dimension of the system.
-         * @return the dimension of the system
-         */
-        int getSystemSize();
-
+        Projectile(double m, double dens, double dragC, double rad,
+            enum Colors c, struct launchParams param);
 
         /**
          * Generates the current x and y velocities considering wind.
          * @return the current velocity data
          */
-        std::vector<double> getCurrentValues();
+        //std::vector<double> getCurrentValues();
+
+        /**
+        * gets the current projectile data
+        * @return a struct containing the last an current xy coordinates, the speed, and the most recent time
+        */
+        struct ProjectileData getData();
+
+        /**
+        * sets the current projectile data
+        */
+        void setData(struct ProjectileData data);
+
+        /**
+        * checks if the projectile is active
+        * @return the status of the projectile
+        */
+        bool isActive();
 
         /**
          * Stores the ordinary differential equations for the x and y components
@@ -53,13 +63,6 @@ public:
          */
         //std::vector<double> updatePosition(double current_time, double DELTA_T, Environment env);
 
-
-        /**
-         * gets the lifetime of the particle in seconds
-         * @return the lifetime
-         */
-        double getTransitTime();
-
         /**
          * gets the mass in kilograms
          * @return the mass in kg
@@ -72,24 +75,21 @@ public:
          */
         std::vector<double> getVelocity();
 
-        /**
-         * gets the creation time of the particle in seconds
-         * @return the creation time
-         */
-        double getCreationTime();
-
-        //function returns false
-        bool update(double time) {
-            return false;
-        } //end update
-
 private:
+    double mass;
+    double density;
+    double drag_coeff;
+    double radius;
+    bool active;
+    struct launchParams launchedWith;
+    enum Colors color;
+    struct projectileData data;
 
     /**
      * gets the position of the particle, in x-y coordinates
      * @return the position
      */
-     std::vector<double> getPosition();
+     //std::vector<double> getPosition();
 
     //this method calculates and returns the magnitude of the velocity (in m/s)
     //by accepting values for the x velocity (considering wind) and the y velocity
