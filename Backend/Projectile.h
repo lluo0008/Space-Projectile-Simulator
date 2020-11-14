@@ -24,8 +24,9 @@ public:
          * @param color enum storing a random selection of colours
          * @param launchParams struct storing the launch angle, launch velocity, and windspeed
          */
-        Projectile(double m, double dens, double dragC, double rad,
-            enum Colors c, struct launchParams param);
+        //Projectile(double m, double dens, double dragC, double rad, enum Colors c, struct launchParams param);
+
+        Projectile(enum Size projectileSize, enum Colors c);
 
         /**
          * Generates the current x and y velocities considering wind.
@@ -84,6 +85,7 @@ private:
     struct launchParams launchedWith;
     enum Colors color;
     struct projectileData data;
+    enum Size size;
 
     /**
      * gets the position of the particle, in x-y coordinates

@@ -68,7 +68,7 @@ double getDrag( double v, double m) {
     //calculate its cross sectional area
     double A = M_PI*pow(R,2);
     //calculate and return the drag force
-    double Fd = /*launchedWith.env.AIR_DENSITY*/*pow(v, 2)*A* drag_coeff/2.0; // 1.0 is temp value so it compiles with no member environment variable; it would now be in launchParams struct
+    double Fd = /*launchedWith.env.AIR_DENSITY**/pow(v, 2)*A* drag_coeff/2.0; // 1.0 is temp value so it compiles with no member environment variable; it would now be in launchParams struct
     return Fd;
 } //end getDrag
 
@@ -99,6 +99,7 @@ double fx(double tk, double vxak, double vyk) {
     //return 0.0;
 } //end fx
 
+/*
 Projectile::Projectile(double m, double dens, double dragC, double rad, 
     enum Colors c, struct launchParams param) {
     mass = m;
@@ -108,6 +109,30 @@ Projectile::Projectile(double m, double dens, double dragC, double rad,
     color = c;
     params = param;
 
+}
+*/
+
+Projectile::Projectile(Size projectileSize, Colors c)
+{
+    drag_coeff = 0.5;
+    if (projectileSize.compare(size.SMALL) == 0) {
+        radius = 1;
+        density = 1;
+        mass = 1;
+        color = c; //WE NEED TO FIGURE OUT HOW WE WANT TO RANDOMIZE COLOUR SELECTION FROM THE ENUM
+    }
+    else if (projectileSize.compare(size.MEDIUM) == 0) {
+        radius = 5;
+        density = 5;
+        mass = 5;
+        color = c; //WE NEED TO FIGURE OUT HOW WE WANT TO RANDOMIZE COLOUR SELECTION FROM THE ENUM
+    }
+    else if (projectileSize.compare(size.MEDIUM) == 0) {
+        radius = 10;
+        density = 10;
+        mass = 10;
+        color = c; //WE NEED TO FIGURE OUT HOW WE WANT TO RANDOMIZE COLOUR SELECTION FROM THE ENUM
+    }
 }
 
 
