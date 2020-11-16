@@ -14,10 +14,11 @@ public:
 
     /**
      * Generates an environment object.
-     * @param wind the cross-wind
+     * @param wind the cross-wind 
+     * @param e the environments enum
      * @throws EnvironmentException creates exception if the wind is outside the bounds
      */
-    Environment(double wind);
+    Environment(Environments e, double wind);
 
     /**
      * Provides the wind speed.

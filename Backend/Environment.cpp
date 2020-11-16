@@ -4,14 +4,42 @@
  */
 
 #include "Environment.h"
+#include "ProjectileManager.h"
+
 using namespace std;
 double wind_speed;
+double windSpeed;
+double airDensity;
+double gravity;
 
 EnvironmentException::EnvironmentException(string message) {
     message = "Warning: environment exception";
 }
 
-Environment::Environment(double wind){
+Environment::Environment(Environments e, double wind) {
+        switch (e) {
+        case EARTH:
+            windSpeed = 11.1;
+            airDensity = 1.2;
+            gravity = 9.807;
+            break;
+        case MARS:
+            windSpeed = 22;
+            airDensity = 0.020;
+            gravity = 3.711;
+            break;
+        case JUPITER:
+            windSpeed = 384;
+            airDensity = 1326;
+            gravity = 24.79;
+            break;
+        case MOON:
+            windSpeed = 0;
+            airDensity = 0;
+            gravity = 1.62;
+            break;
+        }
+
         wind_speed = wind;
         //checks if the wind is outside the bounds
         if (wind < -20 || wind > 20) {
