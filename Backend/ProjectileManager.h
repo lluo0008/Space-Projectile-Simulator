@@ -8,6 +8,8 @@ struct projectileData {
 	double y = 0;
 	double lastX = 0;
 	double lastY = 0;
+	double vx = 0;
+	double vy = 0;
 	double speed = 0;
 	double lastTime = 0;
 };

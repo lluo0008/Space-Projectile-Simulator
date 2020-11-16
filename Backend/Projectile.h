@@ -1,10 +1,15 @@
-//
-// Created by lily on 10/26/20.
-//
+/**
+*
+* Created by lily on 10/26/20.
+* revised: 2020-11-16
+*
+**/
+
 
 #ifndef UNTITLED_PROJECTILE_H
 #define UNTITLED_PROJECTILE_H
 #include <vector>
+#include "ProjectileManager.h"
 
 using namespace std;
 
@@ -12,39 +17,42 @@ class Projectile {
 public:
 
         /**
-         * Instantiates a particle object
-         * @param starting_mass initial mass of the particle
-         * @param creation_time time at creationvelocity
-         * @param position position
-         * @param velocity velocity
-         * @param density density of the particle
-         * @param drag_coeff drag coefficient of the particle
-         * @param burn_rate burn rate of the particle
-         * @param system_size system size
-         * @param starting_radius starting radius of the particle
-         * @param lifetime particle's lifetime
+         * Instantiates a projectile object
+         * @param projectileSize - size of the projectile 
+         * @param c - color of the projectile
+         * @param launchParams struct storing the launch angle, launch velocity, and windspeed
          */
-        Projectile(double starting_mass, double creation_time, std::vector<double> position, std::vector<double> velocity,
-                   double density, double drag_coeff, int system_size, double radius, double transitTime);
-
-        /**
-         * Provides the dimension of the system.
-         * @return the dimension of the system
-         */
-        int getSystemSize();
-
+        Projectile(Size projectileSize, Colors c, launchParams params);
 
         /**
          * Generates the current x and y velocities considering wind.
          * @return the current velocity data
          */
-        std::vector<double> getCurrentValues();
+        //std::vector<double> getCurrentValues();
+
+        /**
+        * gets the current projectile data
+        * @return a struct containing the last an current xy coordinates, the speed, and the most recent time
+        */
+        projectileData getData();
+
+        /**
+        * sets the current projectile data
+        */
+        void setData(projectileData data);
+
+        /**
+        * checks if the projectile is active
+        * @return the status of the projectile
+        */
+        bool isActive() { return active; }
+        bool setActive(bool activity) { active = activity; }
 
         /**
          * Stores the ordinary differential equations for the x and y components
          * @return the x and y ODEs
          */
-        std::vector<double> getFunction(double time, std::vector<double> values);
+        vector<double> getFunction(double time, std::vector<double> values);
 
         /**
          * Calculates the current time and position values for the star.
@@ -52,13 +60,6 @@ public:
          * @return the array of time and position values
          */
         //std::vector<double> updatePosition(double current_time, double DELTA_T, Environment env);
-
-
-        /**
-         * gets the lifetime of the particle in seconds
-         * @return the lifetime
-         */
-        double getTransitTime();
 
         /**
          * gets the mass in kilograms
@@ -70,26 +71,24 @@ public:
          * gets the velocity of the particle in m/s
          * @return the velocity
          */
-        std::vector<double> getVelocity();
-
-        /**
-         * gets the creation time of the particle in seconds
-         * @return the creation time
-         */
-        double getCreationTime();
-
-        //function returns false
-        bool update(double time) {
-            return false;
-        } //end update
+        vector<double> getVelocity();
 
 private:
+    double mass;
+    double density;
+    double drag_coeff;
+    double radius;
+    bool active = false;
+    launchParams launchedWith;
+    Colors color;
+    projectileData data;
+    Size size;
 
     /**
      * gets the position of the particle, in x-y coordinates
      * @return the position
      */
-     std::vector<double> getPosition();
+     //std::vector<double> getPosition();
 
     //this method calculates and returns the magnitude of the velocity (in m/s)
     //by accepting values for the x velocity (considering wind) and the y velocity

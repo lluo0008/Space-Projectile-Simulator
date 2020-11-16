@@ -1,6 +1,7 @@
 /**
  * Lily de Loe
  * 2020/10/26
+ * revised: 2020/11/16
  */
 
 #define _USE_MATH_DEFINES
@@ -13,49 +14,17 @@
 
 using namespace std;
 
-double mass;
-double transitTime;
-double creation_time;
-//Environment environment;
-std::vector<double> position ;
-std::vector<double> velocity;
-double density;
-double drag_coeff;
-double radius;
-int system_size;
-
-std::vector<double> Projectile::getCurrentValues() {
-    //correct x velocity and store both velocity components
-    std::vector<double> temp;
-    //temp.push_back(getVxa(velocity[0], environment.getWind_speed()));
-    temp.push_back(velocity[1]);
-
-    return temp;
-} //getCurrentValues
-
-std::vector<double> getPosition() {
-    //return Helper.copyVector(position);
-    return vector<double>();
-} //end getPosition
-
-double Projectile::getTransitTime() {
-    return transitTime;
-} //end getLifetime
-
-double getMass() {
+double Projectile::getMass() {
     return mass;
 } //end getStarting_mass
 
-std::vector<double> getVelocity() {
-    //return Helper.copyArray(velocity);
-    return vector<double>();
+vector<double> Projectile::getVelocity() {
+    vector <double> velocity;
+    velocity.push_back(data.vx);
+    velocity.push_back(data.vy);
 } //end getVelocity
 
-double getCreationTime() {
-    return creation_time;
-} //end getCreationTime
-
-double getVMag(double vxa, double vy) {
+double Projectile::getVMag(double vxa, double vy) {
     //calculate the magnitude of velocity
     double vxa2 = pow(vxa, 2);
     double vy2 = pow(vy, 2);
@@ -63,90 +32,92 @@ double getVMag(double vxa, double vy) {
     return v;
 } //end getVMag
 
-double getVxa(double vx, double vw) {
+double Projectile::getVxa(double vx, double vw) {
     //calculate the velocity in the x direction with wind
     double vxa = vx - vw;
     return vxa;
 } //end getVxa
 
-double getDrag( double v, double m) {
+double Projectile::getDrag( double v, double m) {
     //calculate the radius of the projectile
     double R3 = (m*3.0)/(M_PI*4*density);
     double R = cbrt(R3);
     //calculate its cross sectional area
     double A = M_PI*pow(R,2);
     //calculate and return the drag force
-    double Fd = /* environment.AIR_DENSITY */ 1.0*pow(v, 2)*A* drag_coeff/2.0; // 1.0 is temp value so it compiles with no member environment variable; it would now be in launchParams struct
+    double Fd = launchedWith.env.AIR_DENSITY*pow(v, 2)*A* drag_coeff/2.0;
     return Fd;
 } //end getDrag
 
-double fy(double tk, double vxak, double vyk){
-    ////initialize variables
-    //double m; //FIGURE OUT WHERE WE WANT TO DECLARE THIS
-    //double Fd;
-    //double v;
-    ////calculate the magnitude of velocity, mass and drag force
-    //v = getVMag(vxak,vyk);
-    //Fd = getDrag(v, m);
-    ////calculate and return fy
-    //double fy = -1.0* /*environment.G*/ 9.18 - Fd*vyk/(m*v); // 9.18 is temp value so it compiles with no member environment variable; it would now be in launchParams struct
-    //return fy;
-    return 0.0;
+double Projectile::fy(double tk, double vxak, double vyk){
+    //initialize variables
+    double Fd;
+    double v;
+    //calculate the magnitude of velocity, mass and drag force
+    v = getVMag(vxak,vyk);
+    Fd = getDrag(data.speed, mass);
+    //calculate and return fy
+    double fy = -1.0*launchedWith.env.G - Fd*vyk/(mass*v);
 } //end fy
 
-double fx(double tk, double vxak, double vyk) {
-    ////initialize variables
-    //double m; //FIGURE OUT WHERE WE WANT TO DECLARE THIS
-    //double Fd;
-    //double v;
-    ////calculate the magnitude of velocity, mass and drag force
-    //v = getVMag(vxak,vyk);
-    //Fd = getDrag(v, m);
-    ////calculate and return fx
-    //double fx = -1.0*Fd*vxak/(m*v);
-    //return fx;
-    return 0.0;
+double Projectile::fx(double tk, double vxak, double vyk) {
+    //initialize variables
+    double Fd;
+    double v;
+    //calculate the magnitude of velocity, mass and drag force
+    v = getVMag(vxak,vyk);
+    Fd = getDrag(v, mass);
+    //calculate and return fx
+    double fx = -1.0*Fd*vxak/(mass*v);
+    return fx;
 } //end fx
 
-//function returns false
-bool update(double time) {
-    return false;
-} //end update
-
-Projectile::Projectile(double starting_mass, double creation_time, std::vector<double> position,
-                       std::vector<double> velocity, double density, double drag_coeff, int system_size,
-                       double radius, double transitTime) {
-    transitTime = transitTime;
-    mass = mass;
-    creation_time = creation_time;
-    //position = Helper.copyArray(position);
-    //velocity = Helper.copyArray(velocity);
-    density = density;
-    drag_coeff = drag_coeff;
-    system_size = system_size;
-    radius = radius;
+Projectile::Projectile(Size projectileSize, Colors c, launchParams params)
+{
+    drag_coeff = 0.5;
+    if (projectileSize == SMALL) {
+        radius = 1;
+        density = 1;
+        mass = 1;
+    }
+    else if (projectileSize == MEDIUM) {
+        radius = 5;
+        density = 5;
+        mass = 5;
+    }
+    else if (projectileSize == LARGE) {
+        radius = 10;
+        density = 10;
+        mass = 10;
+    }
+    color = c;
+    launchedWith = params;
 }
 
-int Projectile::getSystemSize() {
-    return system_size;
+
+projectileData Projectile::getData()
+{
+    return data;
 }
+
+void Projectile::setData(projectileData data){
+    //POSITION AND OTHER PARAMETERS NEED TO BE WORKED IN
+    std::vector <double> velocity = getVelocity();
+    data.vx = velocity[0];
+    data.vy = velocity[1];
+}
+
+/*bool Projectile::isActive()
+{
+    if (data.lastY < 0.01 && data.lastTime != 0.0) {
+        return false;
+    }
+    return true;
+}*/ // original pattern. Going with manual active setting handled by the manager for now.
 
 vector<double> Projectile::getFunction(double time, std::vector<double> values) {
-    //std::vector<double> temp = {fx(time, values[0], values[1]), fy(time, values[0] , values[1])};
-    //return temp;
-    return vector<double>();
+    std::vector <double> temp;
+    temp.push_back(fx(time, values[0], values[1]));
+    temp.push_back(fy(time, values[0], values[1]));
+    return temp;
 }
-
-//std::vector<double> Projectile::updatePosition(double current_time, double DELTA_T, Environment env) {
-//    if (current_time == 0) return getPosition();
-//    //get the updated Runge-Kutta velocities
-//    this->environment = env;
-//    std::vector<double> temp = RungeKutta(this, DELTA_T, current_time - getCreationTime());
-//    velocity[0] += temp[0];
-//    velocity[1] += temp[1];
-//    //calculate the current positions
-//    for(int i = 0; i < 2; i ++) {
-//        position[i] += velocity[i] * DELTA_T;
-//    }
-//    return getPosition();
-//}
