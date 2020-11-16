@@ -33,6 +33,13 @@ enum Colors {
 	BROWN,
 };
 
+enum Environments {
+	EARTH,
+	MARS,
+	JUPITER,
+	MOON
+};
+
 class yeet {
 
 };

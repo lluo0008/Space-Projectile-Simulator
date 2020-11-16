@@ -4,6 +4,8 @@
  */
 
 #include "Environment.h"
+#include "ProjectileManager.h"
+
 using namespace std;
 double wind_speed;
 
@@ -11,7 +13,7 @@ EnvironmentException::EnvironmentException(string message) {
     message = "Warning: environment exception";
 }
 
-Environment::Environment(double wind){
+Environment::Environment(Environments e, double wind) {
         wind_speed = wind;
         //checks if the wind is outside the bounds
         if (wind < -20 || wind > 20) {
