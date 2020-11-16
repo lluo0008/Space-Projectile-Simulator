@@ -1,3 +1,0 @@
-C:/Users/Lily/source/repos/hermes/out/build/x64-Debug (default)/CMakeFiles/edit_cache.dir
-C:/Users/Lily/source/repos/hermes/out/build/x64-Debug (default)/CMakeFiles/untitled.dir
-C:/Users/Lily/source/repos/hermes/out/build/x64-Debug (default)/CMakeFiles/rebuild_cache.dir
