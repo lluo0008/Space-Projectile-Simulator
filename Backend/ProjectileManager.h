@@ -1,5 +1,6 @@
 #pragma once
 
+
 using namespace std;
 
 struct projectileData {
@@ -15,7 +16,7 @@ struct launchParams {
 	double launchAngle;
 	double launchVelocity;
 	double windSpeed;
-	// Environment env; TODO implement Environment Class
+	Environment env;
 };
 
 enum Size { SMALL, MEDIUM, LARGE };
