@@ -1,7 +1,7 @@
 /**
 *
 * Created by lily on 10/26/20.
-* revised: 2020-11-13
+* revised: 2020-11-16
 *
 **/
 
@@ -9,6 +9,7 @@
 #ifndef UNTITLED_PROJECTILE_H
 #define UNTITLED_PROJECTILE_H
 #include <vector>
+#include "ProjectileManager.h"
 
 using namespace std;
 
@@ -17,16 +18,11 @@ public:
 
         /**
          * Instantiates a projectile object
-         * @param mass the mass of the projectile
-         * @param density the density of the projectile
-         * @param drag_coeff the drag coefficient of the projectile
-         * @param radius the radius of the projectile
-         * @param color enum storing a random selection of colours
+         * @param projectileSize - size of the projectile 
+         * @param c - color of the projectile
          * @param launchParams struct storing the launch angle, launch velocity, and windspeed
          */
-        //Projectile(double m, double dens, double dragC, double rad, enum Colors c, struct launchParams param);
-
-        Projectile(Size projectileSize, Colors c);
+        Projectile(Size projectileSize, Colors c, launchParams params);
 
         /**
          * Generates the current x and y velocities considering wind.
@@ -38,24 +34,25 @@ public:
         * gets the current projectile data
         * @return a struct containing the last an current xy coordinates, the speed, and the most recent time
         */
-        struct ProjectileData getData();
+        projectileData getData();
 
         /**
         * sets the current projectile data
         */
-        void setData(ProjectileData data);
+        void setData(projectileData data);
 
         /**
         * checks if the projectile is active
         * @return the status of the projectile
         */
-        bool isActive();
+        bool isActive() { return active; }
+        bool setActive(bool activity) { active = activity; }
 
         /**
          * Stores the ordinary differential equations for the x and y components
          * @return the x and y ODEs
          */
-        std::vector<double> getFunction(double time, std::vector<double> values);
+        vector<double> getFunction(double time, std::vector<double> values);
 
         /**
          * Calculates the current time and position values for the star.
@@ -74,14 +71,14 @@ public:
          * gets the velocity of the particle in m/s
          * @return the velocity
          */
-        std::vector<double> getVelocity();
+        vector<double> getVelocity();
 
 private:
     double mass;
     double density;
     double drag_coeff;
     double radius;
-    bool active;
+    bool active = false;
     launchParams launchedWith;
     Colors color;
     projectileData data;
