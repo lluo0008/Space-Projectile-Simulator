@@ -113,6 +113,7 @@ int main(int, char**)
 
             int my_image_width = 0;
             int my_image_height = 0;
+            char* jupiter = "jupiter.jpg";
             ID3D11ShaderResourceView* my_texture = NULL;
             bool ret = LoadTextureFromFile("stars.jpg", &my_texture, &my_image_width, &my_image_height);
             IM_ASSERT(ret);
@@ -127,7 +128,8 @@ int main(int, char**)
             IM_ASSERT(ret);
 
             ImGui::SetCursorPos(ImVec2(400, 100));
-            ImGui::Image((void*)my_texture, ImVec2(my_image_width * 1, my_image_height * 1));
+            ImGui::ImageButton(my_texture, ImVec2(my_image_width * 1, my_image_height * 1), ImVec2(0, 0), ImVec2(1,1), int(0), ImVec4(100, 100, 100, 0));
+            //ImGui::Image((void*)my_texture, ImVec2(my_image_width * 1, my_image_height * 1));
 
             ret = LoadTextureFromFile("earth.png", &my_texture, &my_image_width, &my_image_height);
             IM_ASSERT(ret);
@@ -155,10 +157,6 @@ int main(int, char**)
 
             ImGui::SetCursorPos(ImVec2(270, 100));
             ImGui::Image(my_texture, ImVec2(my_image_width * 0.4, my_image_height * 0.4));
-
-
-
-
 
 
             ImGui::End();
@@ -195,6 +193,11 @@ int main(int, char**)
     ::UnregisterClass(wc.lpszClassName, wc.hInstance);
 
     return 0;
+}
+
+void jupiter()
+{
+
 }
 
 // Helper functions
