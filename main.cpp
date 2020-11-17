@@ -139,6 +139,9 @@ int main(int, char**)
 
             if (state == 0)
             {
+                ImGui::SetCursorPos(ImVec2(300, 40));
+                ImGui::Text("PROJECTILE SIMULATOR");
+
                 ret = LoadTextureFromFile("jupiter.png", &my_texture, &my_image_width, &my_image_height);
                 IM_ASSERT(ret);
 
@@ -207,6 +210,8 @@ int main(int, char**)
 
             if (state == 1)
             {
+                ImGui::SetCursorPos(ImVec2(360, 40));
+                ImGui::Text("JUPITER");
                 ret = LoadTextureFromFile("jupiter.png", &my_texture, &my_image_width, &my_image_height);
                 IM_ASSERT(ret);
 
@@ -258,6 +263,9 @@ int main(int, char**)
 
             if (state == 2)
             {
+                ImGui::SetCursorPos(ImVec2(360, 40));
+                ImGui::Text("MARS");
+
                 ret = LoadTextureFromFile("mars.png", &my_texture, &my_image_width, &my_image_height);
                 IM_ASSERT(ret);
 
@@ -309,6 +317,9 @@ int main(int, char**)
 
             if (state == 3)
             {
+                ImGui::SetCursorPos(ImVec2(360, 40));
+                ImGui::Text("MOON");
+
                 ret = LoadTextureFromFile("moon.png", &my_texture, &my_image_width, &my_image_height);
                 IM_ASSERT(ret);
 
@@ -360,6 +371,9 @@ int main(int, char**)
 
             if (state == 4)
             {
+                ImGui::SetCursorPos(ImVec2(360, 40));
+                ImGui::Text("EARTH");
+
                 ret = LoadTextureFromFile("earth.png", &my_texture, &my_image_width, &my_image_height);
                 IM_ASSERT(ret);
 
