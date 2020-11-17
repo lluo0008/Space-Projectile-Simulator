@@ -113,39 +113,69 @@ int main(int, char**)
 
 			int my_image_width = 0;
 			int my_image_height = 0;
+			static int count = 0;
 			ID3D11ShaderResourceView* my_texture = NULL;
-			bool ret = LoadTextureFromFile("star.JPG", &my_texture, &my_image_width, &my_image_height);
+			bool ret = LoadTextureFromFile("background.PNG", &my_texture, &my_image_width, &my_image_height);
 			IM_ASSERT(ret);
 
 			ImGui::SetNextWindowPos(ImVec2(-10, -10));
-			ImGui::SetNextWindowSize(ImVec2(750, 510), 0);
+			ImGui::SetNextWindowSize(ImVec2(800, 500), 0);
 
 			ImGui::Begin("physics sim", NULL, 1);
-			ImGui::Image((void*)my_texture, ImVec2(750, 470));
+			ImGui::Image((void*)my_texture, ImVec2(800, 500));
 
-			ret = LoadTextureFromFile("jupiter.PNG", &my_texture, &my_image_width, &my_image_height);
+			ret = LoadTextureFromFile("Jupiter.png", &my_texture, &my_image_width, &my_image_height);
 			IM_ASSERT(ret);
 
-			ImGui::SetCursorPos(ImVec2(0, 420));
+			ImGui::SetCursorPos(ImVec2(0, 400));
 			ImGui::Image((void*)my_texture, ImVec2(750, my_image_height));
 
-			ret = LoadTextureFromFile("cannon.PNG", &my_texture, &my_image_width, &my_image_height);
+			ImGui::SetCursorPos(ImVec2(350, 440));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(0, 0, 0)));
+
+			ImGui::Text("Jupiter");
+			ImGui::PopStyleColor();
+
+			//display cannon
+			ret = LoadTextureFromFile("cannon.png", &my_texture, &my_image_width, &my_image_height);
 			IM_ASSERT(ret);
 
-			ImGui::SetCursorPos(ImVec2(15, 355));
-			ImGui::Image((void*)my_texture, ImVec2(my_image_width/1.5, my_image_height/1.5));
+			ImGui::SetCursorPos(ImVec2(0, 350));
+			ImGui::Image((void*)my_texture, ImVec2(my_image_width / 2, my_image_height / 2));
 
-			ImGui::SetCursorPos(ImVec2(25, 30));
+			ImGui::SetCursorPos(ImVec2(40, 40));
 			ImGui::Button("Home", ImVec2(75, 30));
 
-			ImGui::SetCursorPos(ImVec2(650, 400));
+			static int selectedProjectile = 0;
+
+			ImGui::SetCursorPos(ImVec2(650, 380));
 			ImGui::Button("Next", ImVec2(75, 30));
+				
+
+			ret = LoadTextureFromFile("square.png", &my_texture, &my_image_width, &my_image_height);
+			IM_ASSERT(ret);
+
+			if (selectedProjectile == 1)
+				ImGui::SetCursorPos(ImVec2(145, 145));
+			else if (selectedProjectile == 2)
+				ImGui::SetCursorPos(ImVec2(320, 145));
+			else if (selectedProjectile == 3)
+				ImGui::SetCursorPos(ImVec2(495, 145));
+			else
+				ImGui::SetCursorPos(ImVec2(1000, 1000));
+
+			ImGui::Image((void*)my_texture, ImVec2(117, 117));
 
 			ret = LoadTextureFromFile("projectile1.png", &my_texture, &my_image_width, &my_image_height);
 			IM_ASSERT(ret);
 
 			ImGui::SetCursorPos(ImVec2(500, 150));
 			ImGui::ImageButton(my_texture, ImVec2(100, 100));
+
+			ImGui::SetCursorPos(ImVec2(523, 115));
+			if (ImGui::Button("Select##1", ImVec2(60, 20)))
+				selectedProjectile = 3;
+
 
 			ImGui::SetCursorPos(ImVec2(500, 275));
 			ImGui::Text("Properties: \n - ... \n - ...");
@@ -156,6 +186,10 @@ int main(int, char**)
 			ImGui::SetCursorPos(ImVec2(325, 150));
 			ImGui::ImageButton(my_texture, ImVec2(100, 100));
 
+			ImGui::SetCursorPos(ImVec2(347, 115));
+			if (ImGui::Button("Select##2", ImVec2(60, 20)))
+				selectedProjectile = 2;
+
 			ImGui::SetCursorPos(ImVec2(325, 275));
 			ImGui::Text("Properties: \n - ... \n - ...");
 
@@ -165,25 +199,20 @@ int main(int, char**)
 			ImGui::SetCursorPos(ImVec2(150, 150));
 			ImGui::ImageButton(my_texture, ImVec2(100, 100));
 
+			ImGui::SetCursorPos(ImVec2(173, 115));
+			if (ImGui::Button("Select##3", ImVec2(60, 20)))
+				selectedProjectile = 1;
+
 			ImGui::SetCursorPos(ImVec2(150, 275));
 			ImGui::Text("Properties: \n - ... \n - ...");
 
-
-
+			
+			//ImGui::SetCursorPos(ImVec2(400, 50));
+			//ImGui::Text("Selected Projectile: %d", selectedProjectile);
 
 
 			ImGui::End();
 			
-        }
-
-        // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
-            ImGui::End();
         }
 
         // Rendering
