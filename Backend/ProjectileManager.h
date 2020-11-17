@@ -1,5 +1,6 @@
 #pragma once
-
+#include <vector>
+#include "Projectile.h"
 
 using namespace std;
 
@@ -43,6 +44,24 @@ enum Environments {
 	MOON
 };
 
-class yeet {
+class ProjectileManager {
+private:
+	Size projectileSize;
+	const double dT;
+	launchParams currentParams;
 
+public:
+	ProjectileManager(Environment env, Size projectileSize);
+	void setProjectileSize(Size size);
+	void setWindSpeed(double windSpeed);
+	void setLaunchSpeed(double launchSpeed);
+	void setLaunchAngle(double launchAngle);
+	double getWindSpeed();
+	double getLaunchSpeed();
+	double getLaunchAngle();
+	vector<Projectile> getLaunchedProjectiles();
+	Projectile getProjectile(int index);
+	void launchCurrent();
+	void update();
+	void clear();
 };
