@@ -166,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Downloads\cannon.png" />
+    <Image Include="..\..\..\Downloads\space.png" />
     <Image Include="background.png" />
     <Image Include="Jupiter.png" />
   </ItemGroup>

@@ -64,21 +64,6 @@ int main(int, char**)
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
-
     // Our state
     bool show_demo_window = true;
     bool show_another_window = false;
@@ -106,7 +91,7 @@ int main(int, char**)
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        // We use a Begin/End pair to created a named window.
+        // Begin/End pair to created a named window.
         {
             static int i = 7;
             static int counter = 0;
@@ -114,7 +99,7 @@ int main(int, char**)
             int image_width = 0;
             int image_height = 0;
             ID3D11ShaderResourceView* my_texture = NULL;
-            bool ret = LoadTextureFromFile("background.png", &my_texture, &image_width, &image_height);
+            bool ret = LoadTextureFromFile("space.png", &my_texture, &image_width, &image_height);
             IM_ASSERT(ret);
 
             ImGui::SetNextWindowPos(ImVec2(-10, -10));
@@ -163,7 +148,31 @@ int main(int, char**)
 
             //Compare button
             ImGui::SetCursorPos(ImVec2(640, 130));
-            ImGui::Button("Compare", ImVec2(75, 30));
+            if (ImGui::Button("Compare", ImVec2(75, 30))){
+                ImGui::OpenPopup("Compare Projectile Paths");
+            }
+
+            ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
+            ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+            ImGui::SetNextWindowSize(ImVec2(400, 180));
+            if (ImGui::BeginPopupModal("Compare Projectile Paths"))
+            {
+                ImGui::Text("Choose the projectiles you want to compare:");
+                ImGui::Separator();
+                static bool projectileA = false;
+                static bool projectileB = false;
+                static bool projectileC = false;
+                ImGui::Checkbox("Projectile A", &projectileA);
+                ImGui::Checkbox("Projectile B", &projectileB);
+                ImGui::Checkbox("Projectile C", &projectileC);
+
+                ImGui::Separator();
+                ImGui::SetCursorPos(ImVec2(100, 150));
+                if (ImGui::Button("Close", ImVec2(100, 0))) { ImGui::CloseCurrentPopup(); }
+                ImGui::SameLine();
+                if (ImGui::Button("Compare", ImVec2(100, 0))) { ImGui::CloseCurrentPopup(); }
+                ImGui::EndPopup();
+            }
 
             ImGui::End();
         }
