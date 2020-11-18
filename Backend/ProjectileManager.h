@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Projectile.h"
+#include "Environment.h"
 
 using namespace std;
 
@@ -54,10 +55,10 @@ public:
 	ProjectileManager(Environment env, Size projectileSize);
 	void setProjectileSize(Size size);
 	void setWindSpeed(double windSpeed);
-	void setLaunchSpeed(double launchSpeed);
+	void setLaunchVelocity(double launchVelocity);
 	void setLaunchAngle(double launchAngle);
 	double getWindSpeed();
-	double getLaunchSpeed();
+	double getLaunchVelocity();
 	double getLaunchAngle();
 	vector<Projectile> getLaunchedProjectiles();
 	Projectile getProjectile(int index);
