@@ -75,6 +75,8 @@ public:
 
         vector<double> getCurrentValues();
 
+        Colors getColor() { return color;  }
+
 
 private:
     double mass;

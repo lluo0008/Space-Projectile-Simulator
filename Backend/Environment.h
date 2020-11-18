@@ -10,8 +10,8 @@
 class Environment {
 public:
 
-    const double AIR_DENSITY = 1.2;
-    const double G = 9.807;
+    double AIR_DENSITY;
+    double G;
 
     /**
      * Generates an environment object.

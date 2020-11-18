@@ -36,18 +36,18 @@ double Projectile::getVMag(double vxa, double vy) {
 
 double Projectile::getVxa(double vx, double vw) {
     //calculate the velocity in the x direction with wind
-    double vxa = vx + vw;
+    double vxa = vx - vw;
     return vxa;
 } //end getVxa
 
 double Projectile::getDrag( double v, double m) {
     //calculate the radius of the projectile
-    double R3 = (m*3.0)/(M_PI*4*density);
+    double R3 = (m * 3.0) / (M_PI * 4 * density);
     double R = cbrt(R3);
     //calculate its cross sectional area
-    double A = M_PI*pow(R,2);
+    double A = M_PI * pow(R, 2);
     //calculate and return the drag force
-    double Fd = launchedWith.env->AIR_DENSITY*pow(v, 2)*A* drag_coeff/2.0;
+    double Fd = launchedWith.env->AIR_DENSITY * pow(v, 2) * A * drag_coeff / 2.0;
     return Fd;
 } //end getDrag
 
@@ -105,14 +105,6 @@ projectileData Projectile::getData()
 }
 
 void Projectile::setData(projectileData data){
-    /*this->data.lastX = data.lastX;
-    this->data.lastX = data.lastY;
-    this->data.lastTime = data.lastTime;
-    this->data.x = data.x;
-    this->data.y = data.y;
-    this->data.vx = data.vx;
-    this->data.vy = data.vy;*/
-
     this->data = data;
 }
 
