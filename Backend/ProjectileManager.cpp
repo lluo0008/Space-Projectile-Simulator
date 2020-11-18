@@ -9,7 +9,7 @@ ProjectileManager::ProjectileManager(Environment* env, Size projectileSize) {
 
 	currentParams.launchAngle = 45;
 	currentParams.launchVelocity = 10;
-	currentParams.windSpeed = env->getWind_speed();
+	currentParams.windSpeed = 10;
 	currentParams.env = env;
 
 	t_start = Clock::now();

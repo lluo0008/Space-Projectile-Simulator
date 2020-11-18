@@ -125,3 +125,16 @@ vector<double> Projectile::getFunction(double time, std::vector<double> values) 
     temp.push_back(fy(time, values[0], values[1]));
     return temp;
 }
+
+/**
+  * Generates the current x and y velocities considering wind.
+  * @return the current velocity data
+  */
+vector<double> Projectile::getCurrentValues() {
+    //correct x velocity and store both velocity components
+    vector<double> temp;
+    temp[1] = data.vy;
+    temp[0] = getVxa(data.vx, launchedWith.windSpeed);
+
+    return temp;
+} //getCurrentValues

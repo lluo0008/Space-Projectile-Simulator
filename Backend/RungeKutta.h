@@ -17,4 +17,4 @@
 	 * @param current_time the current time
 	 * @return the array of velocity components
 	 */
-static std::vector<double> RungeKutta(Projectile &system, double DELTA_T, double current_time);
+vector<double> RungeKutta(Projectile &system, double DELTA_T, double current_time);

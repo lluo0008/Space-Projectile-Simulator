@@ -73,6 +73,9 @@ public:
          */
         vector<double> getVelocity();
 
+        vector<double> getCurrentValues();
+
+
 private:
     double mass;
     double density;

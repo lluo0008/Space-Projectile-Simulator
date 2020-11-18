@@ -10,15 +10,15 @@ using namespace std;
 
 std::vector<double> RungeKutta(Projectile& system, double DELTA_T, double current_time) {
     //gets the dimension of the system
-    int num_dims = system.getSystemSize();
+    int num_dims = 2;
 //current time
     double t = current_time;
 //vectors of the components of each Runge-Kutta step
-    std::vector<double> q1,q2,q3,q4;
+    vector<double> q1,q2,q3,q4;
 //get the system's current values
-    std::vector<double> current_vals = system.getCurrentValues();
+    vector<double> current_vals = system.getCurrentValues();
 //vector of velocity components
-    std::vector<double> v;
+    vector<double> v;
 //initialize velocity components as the most current values
     for(int i = 0; i < num_dims; i++)
         v.push_back(current_vals[i]);
