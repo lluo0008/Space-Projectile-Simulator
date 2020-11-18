@@ -30,6 +30,7 @@ public:
 	double getWindSpeed();
 	double getLaunchVelocity();
 	double getLaunchAngle();
+	Size getProjectileSize();
 	vector<Projectile> getLaunchedProjectiles();
 	Projectile getProjectile(int index);
 	void launchCurrent();

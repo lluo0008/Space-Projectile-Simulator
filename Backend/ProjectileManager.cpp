@@ -9,7 +9,7 @@ ProjectileManager::ProjectileManager(Environment* env, Size projectileSize) {
 
 	currentParams.launchAngle = 45;
 	currentParams.launchVelocity = 10;
-	currentParams.windSpeed = 10;
+	currentParams.windSpeed = 0;
 	currentParams.env = env;
 
 	t_start = Clock::now();
@@ -50,7 +50,11 @@ vector<Projectile> ProjectileManager::getLaunchedProjectiles() {
 Projectile ProjectileManager::getProjectile(int index) {
 	return launchedProjectiles[index];
 }
-	
+
+Size ProjectileManager::getProjectileSize() {
+	return projectileSize;
+}
+
 void ProjectileManager::launchCurrent() {
 	if (launchedProjectiles.size() == 10) {
 		launchedProjectiles.erase(launchedProjectiles.begin());
@@ -61,17 +65,33 @@ void ProjectileManager::launchCurrent() {
 
 
 	Projectile toLaunch = Projectile(projectileSize, c, currentParams);
+
+	projectileData launchData;
+	launchData.vx = currentParams.launchVelocity * cos(currentParams.launchAngle);
+	launchData.vy = currentParams.launchVelocity * sin(currentParams.launchAngle);
+	toLaunch.setData(launchData);
+
 	launchedProjectiles.push_back(toLaunch);
 }
 	
 void ProjectileManager::update() {
 	Clock::time_point t_update = Clock::now();
-	milliseconds ms = chrono::duration_cast<milliseconds>(t_start - t_update);
+	milliseconds ms = chrono::duration_cast<milliseconds>(t_update - t_start);
 	double time = ms.count() / 1000.0;
 
 	for (int i = 0; i < launchedProjectiles.size(); i++) {
 		if (launchedProjectiles[i].isActive()) {
-			RungeKutta(launchedProjectiles[i], dT, time); // TODO get system time
+			vector<double> temp = RungeKutta(launchedProjectiles[i], dT, time);
+			projectileData tempData = launchedProjectiles[i].getData();
+			tempData.vx += temp[2];
+			tempData.vy += temp[3];
+			// calculate current positions
+			tempData.lastX = tempData.x;
+			tempData.lastY = tempData.y;
+			tempData.x += tempData.vx * dT;
+			tempData.y += tempData.vy * dT;
+			
+			launchedProjectiles[i].setData(tempData);
 		}
 	}
 }

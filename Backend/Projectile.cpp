@@ -36,7 +36,7 @@ double Projectile::getVMag(double vxa, double vy) {
 
 double Projectile::getVxa(double vx, double vw) {
     //calculate the velocity in the x direction with wind
-    double vxa = vx - vw;
+    double vxa = vx + vw;
     return vxa;
 } //end getVxa
 
@@ -105,10 +105,15 @@ projectileData Projectile::getData()
 }
 
 void Projectile::setData(projectileData data){
-    //POSITION AND OTHER PARAMETERS NEED TO BE WORKED IN
-    std::vector <double> velocity = getVelocity();
-    data.vx = velocity[0];
-    data.vy = velocity[1];
+    /*this->data.lastX = data.lastX;
+    this->data.lastX = data.lastY;
+    this->data.lastTime = data.lastTime;
+    this->data.x = data.x;
+    this->data.y = data.y;
+    this->data.vx = data.vx;
+    this->data.vy = data.vy;*/
+
+    this->data = data;
 }
 
 bool Projectile::isActive()
@@ -133,8 +138,8 @@ vector<double> Projectile::getFunction(double time, std::vector<double> values) 
 vector<double> Projectile::getCurrentValues() {
     //correct x velocity and store both velocity components
     vector<double> temp;
-    temp[1] = data.vy;
-    temp[0] = getVxa(data.vx, launchedWith.windSpeed);
+    temp.push_back(getVxa(data.vx, launchedWith.windSpeed));
+    temp.push_back(data.vy);
 
     return temp;
 } //getCurrentValues
