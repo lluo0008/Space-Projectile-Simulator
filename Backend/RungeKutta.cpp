@@ -8,7 +8,7 @@
 
 using namespace std;
 
-std::vector<double> RungeKutta::rungeKutta(Projectile& system, double DELTA_T, double current_time) {
+std::vector<double> RungeKutta(Projectile& system, double DELTA_T, double current_time) {
     //gets the dimension of the system
     int num_dims = system.getSystemSize();
 //current time

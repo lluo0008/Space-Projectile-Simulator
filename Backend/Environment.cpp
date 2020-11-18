@@ -4,7 +4,6 @@
  */
 
 #include "Environment.h"
-#include "ProjectileManager.h"
 
 using namespace std;
 double wind_speed;

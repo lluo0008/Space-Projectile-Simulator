@@ -1,3 +1,5 @@
+#pragma once
+
 /**
 *
 * Created by lily on 10/26/20.
@@ -6,10 +8,8 @@
 **/
 
 
-#ifndef UNTITLED_PROJECTILE_H
-#define UNTITLED_PROJECTILE_H
 #include <vector>
-#include "ProjectileManager.h"
+#include "DataStructures.h"
 
 using namespace std;
 
@@ -45,7 +45,7 @@ public:
         * checks if the projectile is active
         * @return the status of the projectile
         */
-        bool isActive() { return active; }
+        bool isActive(); // { return active; }
         bool setActive(bool activity) { active = activity; }
 
         /**
@@ -116,6 +116,3 @@ private:
     //projectile mass and force of drag. Variables use combinations of the units kg, m and s
     double fx(double tk, double vxak, double vyk);
 };
-
-
-#endif //UNTITLED_PROJECTILE_H

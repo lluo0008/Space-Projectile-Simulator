@@ -1,10 +1,11 @@
+#pragma once
+
 /**
  * Lily de Loe
  * 2020/10/26
  */
 
-#ifndef UNTITLED_ENVIRONMENT_H
-#define UNTITLED_ENVIRONMENT_H
+#include "DataStructures.h"
 
 class Environment {
 public:
@@ -37,10 +38,6 @@ private:
 };
 
 
-#endif //UNTITLED_ENVIRONMENT_H
-
-#ifndef UNTITLED_ENVIRONMENTEXCEPTION_H
-#define UNTITLED_ENVIRONMENTEXCEPTION_H
 #include "iostream"
 
 using namespace std;
@@ -54,6 +51,3 @@ public:
     EnvironmentException(string message);
 
 };
-
-
-#endif //UNTITLED_ENVIRONMENTEXCEPTION_H

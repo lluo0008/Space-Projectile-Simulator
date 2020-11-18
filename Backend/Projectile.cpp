@@ -22,6 +22,8 @@ vector<double> Projectile::getVelocity() {
     vector <double> velocity;
     velocity.push_back(data.vx);
     velocity.push_back(data.vy);
+
+    return velocity;
 } //end getVelocity
 
 double Projectile::getVMag(double vxa, double vy) {
@@ -45,7 +47,7 @@ double Projectile::getDrag( double v, double m) {
     //calculate its cross sectional area
     double A = M_PI*pow(R,2);
     //calculate and return the drag force
-    double Fd = launchedWith.env.AIR_DENSITY*pow(v, 2)*A* drag_coeff/2.0;
+    double Fd = launchedWith.env->AIR_DENSITY*pow(v, 2)*A* drag_coeff/2.0;
     return Fd;
 } //end getDrag
 
@@ -57,7 +59,9 @@ double Projectile::fy(double tk, double vxak, double vyk){
     v = getVMag(vxak,vyk);
     Fd = getDrag(data.speed, mass);
     //calculate and return fy
-    double fy = -1.0*launchedWith.env.G - Fd*vyk/(mass*v);
+    double fy = -1.0*launchedWith.env->G - Fd*vyk/(mass*v);
+    
+    return fy;
 } //end fy
 
 double Projectile::fx(double tk, double vxak, double vyk) {
@@ -107,13 +111,13 @@ void Projectile::setData(projectileData data){
     data.vy = velocity[1];
 }
 
-/*bool Projectile::isActive()
+bool Projectile::isActive()
 {
-    if (data.lastY < 0.01 && data.lastTime != 0.0) {
+    if (data.y < 0) {
         return false;
     }
     return true;
-}*/ // original pattern. Going with manual active setting handled by the manager for now.
+} 
 
 vector<double> Projectile::getFunction(double time, std::vector<double> values) {
     std::vector <double> temp;

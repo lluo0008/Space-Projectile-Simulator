@@ -147,6 +147,7 @@
     <ClCompile Include="RungeKutta.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DataStructures.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Projectile.h" />
