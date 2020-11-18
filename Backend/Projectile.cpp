@@ -22,6 +22,8 @@ vector<double> Projectile::getVelocity() {
     vector <double> velocity;
     velocity.push_back(data.vx);
     velocity.push_back(data.vy);
+
+    return velocity;
 } //end getVelocity
 
 double Projectile::getVMag(double vxa, double vy) {
@@ -40,12 +42,12 @@ double Projectile::getVxa(double vx, double vw) {
 
 double Projectile::getDrag( double v, double m) {
     //calculate the radius of the projectile
-    double R3 = (m*3.0)/(M_PI*4*density);
+    double R3 = (m * 3.0) / (M_PI * 4 * density);
     double R = cbrt(R3);
     //calculate its cross sectional area
-    double A = M_PI*pow(R,2);
+    double A = M_PI * pow(R, 2);
     //calculate and return the drag force
-    double Fd = launchedWith.env.AIR_DENSITY*pow(v, 2)*A* drag_coeff/2.0;
+    double Fd = launchedWith.env->AIR_DENSITY * pow(v, 2) * A * drag_coeff / 2.0;
     return Fd;
 } //end getDrag
 
@@ -55,9 +57,11 @@ double Projectile::fy(double tk, double vxak, double vyk){
     double v;
     //calculate the magnitude of velocity, mass and drag force
     v = getVMag(vxak,vyk);
-    Fd = getDrag(data.speed, mass);
+    Fd = getDrag(v, mass);
     //calculate and return fy
-    double fy = -1.0*launchedWith.env.G - Fd*vyk/(mass*v);
+    double fy = -1.0*launchedWith.env->G - Fd*vyk/(mass*v);
+    
+    return fy;
 } //end fy
 
 double Projectile::fx(double tk, double vxak, double vyk) {
@@ -101,19 +105,16 @@ projectileData Projectile::getData()
 }
 
 void Projectile::setData(projectileData data){
-    //POSITION AND OTHER PARAMETERS NEED TO BE WORKED IN
-    std::vector <double> velocity = getVelocity();
-    data.vx = velocity[0];
-    data.vy = velocity[1];
+    this->data = data;
 }
 
-/*bool Projectile::isActive()
+bool Projectile::isActive()
 {
-    if (data.lastY < 0.01 && data.lastTime != 0.0) {
+    if (data.y < 0) {
         return false;
     }
     return true;
-}*/ // original pattern. Going with manual active setting handled by the manager for now.
+} 
 
 vector<double> Projectile::getFunction(double time, std::vector<double> values) {
     std::vector <double> temp;
@@ -121,3 +122,16 @@ vector<double> Projectile::getFunction(double time, std::vector<double> values) 
     temp.push_back(fy(time, values[0], values[1]));
     return temp;
 }
+
+/**
+  * Generates the current x and y velocities considering wind.
+  * @return the current velocity data
+  */
+vector<double> Projectile::getCurrentValues() {
+    //correct x velocity and store both velocity components
+    vector<double> temp;
+    temp.push_back(getVxa(data.vx, launchedWith.windSpeed));
+    temp.push_back(data.vy);
+
+    return temp;
+} //getCurrentValues

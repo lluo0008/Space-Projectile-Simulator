@@ -143,9 +143,11 @@
     <ClCompile Include="backend_main.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="ProjectileManager.cpp" />
     <ClCompile Include="RungeKutta.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DataStructures.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Projectile.h" />

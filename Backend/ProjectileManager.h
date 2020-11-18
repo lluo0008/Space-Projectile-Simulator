@@ -1,48 +1,38 @@
 #pragma once
-
+#include <vector>
+#include <chrono>
+#include "Projectile.h"
+#include "Environment.h"
+#include "DataStructures.h"
 
 using namespace std;
 
-struct projectileData {
-	double x = 0;
-	double y = 0;
-	double lastX = 0;
-	double lastY = 0;
-	double vx = 0;
-	double vy = 0;
-	double speed = 0;
-	double lastTime = 0;
-};
+typedef chrono::high_resolution_clock Clock;
+typedef chrono::milliseconds milliseconds;
 
-struct launchParams {
-	double launchAngle;
-	double launchVelocity;
-	double windSpeed;
-	Environment env;
-};
+class ProjectileManager {
+private:
+	Size projectileSize;
+	const double dT = 0.05;
+	launchParams currentParams;
+	vector<Projectile> launchedProjectiles;
+	int colorCounter = 0;
+	Clock::time_point t_start;
 
-enum Size { SMALL, MEDIUM, LARGE };
+	void clear();
 
-enum Colors {
-	RED,
-	GREEN,
-	BLUE,
-	ORANGE,
-	YELLOW,
-	PINK,
-	BLACK, 
-	WHITE,
-	PURPLE,
-	BROWN,
-};
-
-enum Environments {
-	EARTH,
-	MARS,
-	JUPITER,
-	MOON
-};
-
-class yeet {
-
+public:
+	ProjectileManager(Environment* env, Size projectileSize);
+	void setProjectileSize(Size size);
+	void setWindSpeed(double windSpeed);
+	void setLaunchVelocity(double launchVelocity);
+	void setLaunchAngle(double launchAngle);
+	double getWindSpeed();
+	double getLaunchVelocity();
+	double getLaunchAngle();
+	Size getProjectileSize();
+	vector<Projectile> getLaunchedProjectiles();
+	Projectile getProjectile(int index);
+	void launchCurrent();
+	void update();
 };
