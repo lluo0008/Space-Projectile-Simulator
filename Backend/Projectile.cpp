@@ -57,7 +57,7 @@ double Projectile::fy(double tk, double vxak, double vyk){
     double v;
     //calculate the magnitude of velocity, mass and drag force
     v = getVMag(vxak,vyk);
-    Fd = getDrag(data.speed, mass);
+    Fd = getDrag(v, mass);
     //calculate and return fy
     double fy = -1.0*launchedWith.env->G - Fd*vyk/(mass*v);
     

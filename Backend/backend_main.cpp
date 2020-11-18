@@ -10,7 +10,7 @@ using namespace std;
 int count = 0;
 
 Environment* earth = new Environment(EARTH, 10);
-ProjectileManager manager = ProjectileManager(earth, SMALL);
+ProjectileManager manager = ProjectileManager(earth, LARGE);
 
 // timer function to execute update asynchronously
 void timer_start(function<void(void)> func, unsigned int interval) {
@@ -47,8 +47,7 @@ void test_backend() {
 
     cout << "> Launching projectile..." << endl;
     manager.launchCurrent();
-    updater();
-    
+
     timer_start(updater, 16);
 
     while (true);

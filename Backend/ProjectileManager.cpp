@@ -5,11 +5,11 @@
 using namespace std;
 
 ProjectileManager::ProjectileManager(Environment* env, Size projectileSize) {
-	projectileSize = projectileSize;
+	this->projectileSize = projectileSize;
 
 	currentParams.launchAngle = 45;
-	currentParams.launchVelocity = 10;
-	currentParams.windSpeed = 0;
+	currentParams.launchVelocity = 30;
+	currentParams.windSpeed = 10;
 	currentParams.env = env;
 
 	t_start = Clock::now();
@@ -62,7 +62,6 @@ void ProjectileManager::launchCurrent() {
 
 	colorCounter = (colorCounter + 1) % 10;
 	Colors c = (Colors) colorCounter;
-
 
 	Projectile toLaunch = Projectile(projectileSize, c, currentParams);
 
