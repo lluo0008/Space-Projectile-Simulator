@@ -87,15 +87,58 @@ int main(int, char**)
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    enum Screen {
+        SCREEN_HOME,
+        SCREEN_JUPITER,
+        SCREEN_MARS,
+        SCREEN_MOON,
+        SCREEN_EARTH
+    };
 
-    int state = 0;
+    int state = SCREEN_HOME;
     //state 0 = home screen
     //state 1 = jupiter
     //state 2 = mars
     //state 3 = moon
     //state 4 = earth
 
+    /*
+    ==================== Load Textures ==================== 
+    */
+    ID3D11ShaderResourceView* stars = NULL;
+    int stars_width = 0, stars_height = 0;
+    bool ret = LoadTextureFromFile("stars.jpg", &stars, &stars_width, &stars_height);
+    IM_ASSERT(ret);
+    
+    // JUPITER
+    ID3D11ShaderResourceView* jupiter = NULL;
+    int jupiter_width = 0, jupiter_height = 0;
+    ret = LoadTextureFromFile("jupiter.png", &jupiter, &jupiter_width, &jupiter_height);
+    IM_ASSERT(ret);
 
+    // MARS
+    ID3D11ShaderResourceView* mars = NULL;
+    int mars_width = 0, mars_height = 0;
+    ret = LoadTextureFromFile("mars.png", &mars, &mars_width, &mars_height);
+    IM_ASSERT(ret);
+
+    // MOON
+    ID3D11ShaderResourceView* moon = NULL;
+    int moon_width = 0, moon_height = 0;
+    ret = LoadTextureFromFile("moon.png", &moon, &moon_width, &moon_height);
+    IM_ASSERT(ret);
+
+    // EARTH
+    ID3D11ShaderResourceView* earth = NULL;
+    int earth_width = 0, earth_height = 0;
+    ret = LoadTextureFromFile("earth.png", &earth, &earth_width, &earth_height);
+    IM_ASSERT(ret);
+
+    // ROCKET
+    ID3D11ShaderResourceView* rocket = NULL;
+    int rocket_width = 0, rocket_height = 0;
+    ret = LoadTextureFromFile("rocket.png", &rocket, &rocket_width, &rocket_height);
+    IM_ASSERT(ret);
 
     // Main loop
     MSG msg;
@@ -121,321 +164,62 @@ int main(int, char**)
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
-
-            int my_image_width = 0;
-            int my_image_height = 0;
-            
-            
-            ID3D11ShaderResourceView* my_texture = NULL;
-            bool ret = LoadTextureFromFile("stars.jpg", &my_texture, &my_image_width, &my_image_height);
-            IM_ASSERT(ret);
-
             ImGui::SetNextWindowPos(ImVec2(-10, -10));
             ImGui::SetNextWindowSize(ImVec2(750, 510), 0);
 
-            ImGui::Begin("physics sim", NULL, 1);
-            ImGui::Image((void*)my_texture, ImVec2(750, 470));
+            ImGui::Begin("physics sim", NULL, ImGuiWindowFlags_NoDecoration);
+            ImGui::Image((void*)stars, ImVec2(750, 470));
 
-
-            if (state == 0)
+            if (state == SCREEN_HOME)
             {
+                // Title
                 ImGui::SetCursorPos(ImVec2(300, 40));
                 ImGui::Text("PROJECTILE SIMULATOR");
 
-                ret = LoadTextureFromFile("jupiter.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(400, 100));
-                if (ImGui::Button("jupiter", ImVec2(my_image_width, my_image_height)))
+                // Jupiter TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(400, 80));
+                ImGui::Image(jupiter, ImVec2(jupiter_width, jupiter_height));
+                ImGui::SetCursorPos(ImVec2(510, 410));
+                if (ImGui::Button("jupiter", ImVec2(100, 50)))
                 {
-                    state = 1;
+                    state = SCREEN_JUPITER;
                 }
-                
-                ImGui::SetCursorPos(ImVec2(400, 100));
-                ImGui::Image(my_texture, ImVec2(my_image_width, my_image_height));
-                
-                //ImGui::Image((void*)my_texture, ImVec2(my_image_width * 1, my_image_height * 1));
 
-                
-                ret = LoadTextureFromFile("mars.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-                
+                // Mars TODO add button trigger
                 ImGui::SetCursorPos(ImVec2(270, 100));
-                if (ImGui::Button("mars", ImVec2(my_image_width * 0.4, my_image_height * 0.4)))
+                ImGui::Image(mars, ImVec2(mars_width * 0.4, mars_height * 0.4));
+                ImGui::SetCursorPos(ImVec2(280, 190));
+                if (ImGui::Button("mars", ImVec2(70, 30)))
                 {
-                    state = 2;
+                    state = SCREEN_MARS;
                 }
-                ImGui::SetCursorPos(ImVec2(270, 100));
-                ImGui::Image(my_texture, ImVec2(my_image_width * 0.4, my_image_height * 0.4));
 
-
-
-                ret = LoadTextureFromFile("moon.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(150, 230));
-                if (ImGui::Button("moon", ImVec2(my_image_width * 0.3, my_image_height * 0.3)))
+                // Moon TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(150, 200));
+                ImGui::Image(moon, ImVec2(moon_width * 0.3, moon_height * 0.3));
+                ImGui::SetCursorPos(ImVec2(135, 250));
+                if (ImGui::Button("moon", ImVec2(70, 30)))
                 {
-                    state = 3;
+                    state = SCREEN_MOON;
                 }
-                ImGui::SetCursorPos(ImVec2(150, 230));
-                ImGui::Image(my_texture, ImVec2(my_image_width * 0.3, my_image_height * 0.3));
 
-
-
-                ret = LoadTextureFromFile("earth.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(30, 300));
-                if (ImGui::Button("earth", ImVec2(my_image_width / 1.5, my_image_height / 1.5)))
+                // Earth TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(30, 270));
+                ImGui::Image(earth, ImVec2(earth_width / 1.5, earth_height / 1.5));
+                ImGui::SetCursorPos(ImVec2(55, 420));
+                if (ImGui::Button("earth", ImVec2(80, 40)))
                 {
-                    state = 4;
+                    state = SCREEN_EARTH;
                 }
-                ImGui::SetCursorPos(ImVec2(30, 300));
-                ImGui::Image(my_texture, ImVec2(my_image_width / 1.5, my_image_height / 1.5));
 
-
-                ret = LoadTextureFromFile("rocket.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
+                // Rocket Graphic
                 ImGui::SetCursorPos(ImVec2(10, 300));
-                ImGui::Image((void*)my_texture, ImVec2(my_image_width * 0.25, my_image_height * 0.25));
-
-                //ImGui::SetCursorPos(ImVec2(650, 400));
-                //ImGui::Button("Next", ImVec2(75, 30));
-
-
-
-            }
-
-            if (state == 1)
-            {
-                ImGui::SetCursorPos(ImVec2(360, 40));
-                ImGui::Text("JUPITER");
-                ret = LoadTextureFromFile("jupiter.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(0, 420));
-                ImGui::Image((void*)my_texture, ImVec2(750, my_image_height));
-
-                ret = LoadTextureFromFile("cannon.PNG", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(15, 355));
-                ImGui::Image((void*)my_texture, ImVec2(my_image_width / 1.5, my_image_height / 1.5));
-
-                ImGui::SetCursorPos(ImVec2(25, 30));
-                if (ImGui::Button("Home", ImVec2(75, 30)))
-                {
-                    state = 0;
-                }
-
-                ImGui::SetCursorPos(ImVec2(650, 400));
-                ImGui::Button("Next", ImVec2(75, 30));
-
-                ret = LoadTextureFromFile("projectile1.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(500, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(500, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-
-                ret = LoadTextureFromFile("projectile2.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(325, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(325, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-
-                ret = LoadTextureFromFile("projectile3.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(150, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(150, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-            }
-
-            if (state == 2)
-            {
-                ImGui::SetCursorPos(ImVec2(360, 40));
-                ImGui::Text("MARS");
-
-                ret = LoadTextureFromFile("mars.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(0, 420));
-                ImGui::Image((void*)my_texture, ImVec2(750, my_image_height));
-
-                ret = LoadTextureFromFile("cannon.PNG", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(15, 355));
-                ImGui::Image((void*)my_texture, ImVec2(my_image_width / 1.5, my_image_height / 1.5));
-
-                ImGui::SetCursorPos(ImVec2(25, 30));
-                if (ImGui::Button("Home", ImVec2(75, 30)))
-                {
-                    state = 0;
-                }
-
-                ImGui::SetCursorPos(ImVec2(650, 400));
-                ImGui::Button("Next", ImVec2(75, 30));
-
-                ret = LoadTextureFromFile("projectile1.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(500, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(500, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-
-                ret = LoadTextureFromFile("projectile2.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(325, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(325, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-
-                ret = LoadTextureFromFile("projectile3.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(150, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(150, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-            }
-
-            if (state == 3)
-            {
-                ImGui::SetCursorPos(ImVec2(360, 40));
-                ImGui::Text("MOON");
-
-                ret = LoadTextureFromFile("moon.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(0, 420));
-                ImGui::Image((void*)my_texture, ImVec2(750, my_image_height));
-
-                ret = LoadTextureFromFile("cannon.PNG", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(15, 355));
-                ImGui::Image((void*)my_texture, ImVec2(my_image_width / 1.5, my_image_height / 1.5));
-
-                ImGui::SetCursorPos(ImVec2(25, 30));
-                if (ImGui::Button("Home", ImVec2(75, 30)))
-                {
-                    state = 0;
-                }
-
-                ImGui::SetCursorPos(ImVec2(650, 400));
-                ImGui::Button("Next", ImVec2(75, 30));
-
-                ret = LoadTextureFromFile("projectile1.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(500, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(500, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-
-                ret = LoadTextureFromFile("projectile2.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(325, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(325, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-
-                ret = LoadTextureFromFile("projectile3.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(150, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(150, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-            }
-
-            if (state == 4)
-            {
-                ImGui::SetCursorPos(ImVec2(360, 40));
-                ImGui::Text("EARTH");
-
-                ret = LoadTextureFromFile("earth.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(0, 420));
-                ImGui::Image((void*)my_texture, ImVec2(750, my_image_height));
-
-                ret = LoadTextureFromFile("cannon.PNG", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(15, 355));
-                ImGui::Image((void*)my_texture, ImVec2(my_image_width / 1.5, my_image_height / 1.5));
-
-                ImGui::SetCursorPos(ImVec2(25, 30));
-                if (ImGui::Button("Home", ImVec2(75, 30)))
-                {
-                    state = 0;
-                }
-
-                ImGui::SetCursorPos(ImVec2(650, 400));
-                ImGui::Button("Next", ImVec2(75, 30));
-
-                ret = LoadTextureFromFile("projectile1.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(500, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(500, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-
-                ret = LoadTextureFromFile("projectile2.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(325, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(325, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
-
-                ret = LoadTextureFromFile("projectile3.png", &my_texture, &my_image_width, &my_image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetCursorPos(ImVec2(150, 150));
-                ImGui::ImageButton(my_texture, ImVec2(100, 100));
-
-                ImGui::SetCursorPos(ImVec2(150, 275));
-                ImGui::Text("Properties: \n - ... \n - ...");
+                ImGui::Image((void*)rocket, ImVec2(rocket_width * 0.25, rocket_height * 0.25));
             }
 
             ImGui::End();
 
-        }
-
-        // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
-            ImGui::End();
-        }
+        }       
 
         // Rendering
         ImGui::Render();
@@ -459,13 +243,7 @@ int main(int, char**)
     return 0;
 }
 
-void jupiter()
-{
-    std::cout << "test" << std::endl;
-}
-
 // Helper functions
-
 bool LoadTextureFromFile(const char* filename, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height)
 {
     // Load from disk into a raw RGBA buffer
