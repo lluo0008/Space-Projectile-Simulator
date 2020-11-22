@@ -107,37 +107,37 @@ int main(int, char**)
     */
     ID3D11ShaderResourceView* stars = NULL;
     int stars_width = 0, stars_height = 0;
-    bool ret = LoadTextureFromFile("stars.jpg", &stars, &stars_width, &stars_height);
+    bool ret = LoadTextureFromFile("assets\\stars.jpg", &stars, &stars_width, &stars_height);
     IM_ASSERT(ret);
     
     // JUPITER
     ID3D11ShaderResourceView* jupiter = NULL;
     int jupiter_width = 0, jupiter_height = 0;
-    ret = LoadTextureFromFile("jupiter.png", &jupiter, &jupiter_width, &jupiter_height);
+    ret = LoadTextureFromFile("assets/jupiter.png", &jupiter, &jupiter_width, &jupiter_height);
     IM_ASSERT(ret);
 
     // MARS
     ID3D11ShaderResourceView* mars = NULL;
     int mars_width = 0, mars_height = 0;
-    ret = LoadTextureFromFile("mars.png", &mars, &mars_width, &mars_height);
+    ret = LoadTextureFromFile("assets/mars.png", &mars, &mars_width, &mars_height);
     IM_ASSERT(ret);
 
     // MOON
     ID3D11ShaderResourceView* moon = NULL;
     int moon_width = 0, moon_height = 0;
-    ret = LoadTextureFromFile("moon.png", &moon, &moon_width, &moon_height);
+    ret = LoadTextureFromFile("assets/moon.png", &moon, &moon_width, &moon_height);
     IM_ASSERT(ret);
 
     // EARTH
     ID3D11ShaderResourceView* earth = NULL;
     int earth_width = 0, earth_height = 0;
-    ret = LoadTextureFromFile("earth.png", &earth, &earth_width, &earth_height);
+    ret = LoadTextureFromFile("assets/earth.png", &earth, &earth_width, &earth_height);
     IM_ASSERT(ret);
 
     // ROCKET
     ID3D11ShaderResourceView* rocket = NULL;
     int rocket_width = 0, rocket_height = 0;
-    ret = LoadTextureFromFile("rocket.png", &rocket, &rocket_width, &rocket_height);
+    ret = LoadTextureFromFile("assets/rocket.png", &rocket, &rocket_width, &rocket_height);
     IM_ASSERT(ret);
 
     // Main loop
