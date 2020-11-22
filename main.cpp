@@ -2,7 +2,10 @@
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
+
+
 #include "imgui.h"
+#include "iostream"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
 #include <d3d11.h>
@@ -10,11 +13,15 @@
 #include <dinput.h>
 #include <tchar.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"         // NULL, malloc, free, atoi
+
+
 // Data
-static ID3D11Device*            g_pd3dDevice = NULL;
-static ID3D11DeviceContext*     g_pd3dDeviceContext = NULL;
-static IDXGISwapChain*          g_pSwapChain = NULL;
-static ID3D11RenderTargetView*  g_mainRenderTargetView = NULL;
+static ID3D11Device* g_pd3dDevice = NULL;
+static ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
+static IDXGISwapChain* g_pSwapChain = NULL;
+static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
 
 // Forward declarations of helper functions
 bool CreateDeviceD3D(HWND hWnd);
@@ -22,6 +29,7 @@ void CleanupDeviceD3D();
 void CreateRenderTarget();
 void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+bool LoadTextureFromFile(const char*, ID3D11ShaderResourceView**, int*, int*);
 
 // Main code
 int main(int, char**)
@@ -30,7 +38,7 @@ int main(int, char**)
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
     ::RegisterClassEx(&wc);
-    HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("Dear ImGui DirectX11 Example"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
+    HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("Physics Simulator"), WS_OVERLAPPEDWINDOW, 100, 100, 750, 500, NULL, NULL, wc.hInstance, NULL);
 
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
@@ -79,6 +87,59 @@ int main(int, char**)
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    enum Screen {
+        SCREEN_HOME,
+        SCREEN_JUPITER,
+        SCREEN_MARS,
+        SCREEN_MOON,
+        SCREEN_EARTH
+    };
+
+    int state = SCREEN_HOME;
+    //state 0 = home screen
+    //state 1 = jupiter
+    //state 2 = mars
+    //state 3 = moon
+    //state 4 = earth
+
+    /*
+    ==================== Load Textures ==================== 
+    */
+    ID3D11ShaderResourceView* stars = NULL;
+    int stars_width = 0, stars_height = 0;
+    bool ret = LoadTextureFromFile("assets\\stars.jpg", &stars, &stars_width, &stars_height);
+    IM_ASSERT(ret);
+    
+    // JUPITER
+    ID3D11ShaderResourceView* jupiter = NULL;
+    int jupiter_width = 0, jupiter_height = 0;
+    ret = LoadTextureFromFile("assets/jupiter.png", &jupiter, &jupiter_width, &jupiter_height);
+    IM_ASSERT(ret);
+
+    // MARS
+    ID3D11ShaderResourceView* mars = NULL;
+    int mars_width = 0, mars_height = 0;
+    ret = LoadTextureFromFile("assets/mars.png", &mars, &mars_width, &mars_height);
+    IM_ASSERT(ret);
+
+    // MOON
+    ID3D11ShaderResourceView* moon = NULL;
+    int moon_width = 0, moon_height = 0;
+    ret = LoadTextureFromFile("assets/moon.png", &moon, &moon_width, &moon_height);
+    IM_ASSERT(ret);
+
+    // EARTH
+    ID3D11ShaderResourceView* earth = NULL;
+    int earth_width = 0, earth_height = 0;
+    ret = LoadTextureFromFile("assets/earth.png", &earth, &earth_width, &earth_height);
+    IM_ASSERT(ret);
+
+    // ROCKET
+    ID3D11ShaderResourceView* rocket = NULL;
+    int rocket_width = 0, rocket_height = 0;
+    ret = LoadTextureFromFile("assets/rocket.png", &rocket, &rocket_width, &rocket_height);
+    IM_ASSERT(ret);
+
     // Main loop
     MSG msg;
     ZeroMemory(&msg, sizeof(msg));
@@ -101,42 +162,64 @@ int main(int, char**)
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
-            static float f = 0.0f;
-            static int counter = 0;
+            ImGui::SetNextWindowPos(ImVec2(-10, -10));
+            ImGui::SetNextWindowSize(ImVec2(750, 510), 0);
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Begin("physics sim", NULL, ImGuiWindowFlags_NoDecoration);
+            ImGui::Image((void*)stars, ImVec2(750, 470));
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
+            if (state == SCREEN_HOME)
+            {
+                // Title
+                ImGui::SetCursorPos(ImVec2(300, 40));
+                ImGui::Text("PROJECTILE SIMULATOR");
 
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+                // Jupiter TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(400, 80));
+                ImGui::Image(jupiter, ImVec2(jupiter_width, jupiter_height));
+                ImGui::SetCursorPos(ImVec2(510, 410));
+                if (ImGui::Button("jupiter", ImVec2(100, 50)))
+                {
+                    state = SCREEN_JUPITER;
+                }
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
+                // Mars TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(270, 100));
+                ImGui::Image(mars, ImVec2(mars_width * 0.4, mars_height * 0.4));
+                ImGui::SetCursorPos(ImVec2(280, 190));
+                if (ImGui::Button("mars", ImVec2(70, 30)))
+                {
+                    state = SCREEN_MARS;
+                }
 
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+                // Moon TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(150, 200));
+                ImGui::Image(moon, ImVec2(moon_width * 0.3, moon_height * 0.3));
+                ImGui::SetCursorPos(ImVec2(135, 250));
+                if (ImGui::Button("moon", ImVec2(70, 30)))
+                {
+                    state = SCREEN_MOON;
+                }
+
+                // Earth TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(30, 270));
+                ImGui::Image(earth, ImVec2(earth_width / 1.5, earth_height / 1.5));
+                ImGui::SetCursorPos(ImVec2(55, 420));
+                if (ImGui::Button("earth", ImVec2(80, 40)))
+                {
+                    state = SCREEN_EARTH;
+                }
+
+                // Rocket Graphic
+                ImGui::SetCursorPos(ImVec2(10, 300));
+                ImGui::Image((void*)rocket, ImVec2(rocket_width * 0.25, rocket_height * 0.25));
+            }
+
             ImGui::End();
-        }
 
-        // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
-            ImGui::End();
-        }
+        }       
 
         // Rendering
         ImGui::Render();
@@ -161,6 +244,51 @@ int main(int, char**)
 }
 
 // Helper functions
+bool LoadTextureFromFile(const char* filename, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height)
+{
+    // Load from disk into a raw RGBA buffer
+    int image_width = 0;
+    int image_height = 0;
+    unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
+    if (image_data == NULL)
+        return false;
+
+    // Create texture
+    D3D11_TEXTURE2D_DESC desc;
+    ZeroMemory(&desc, sizeof(desc));
+    desc.Width = image_width;
+    desc.Height = image_height;
+    desc.MipLevels = 1;
+    desc.ArraySize = 1;
+    desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    desc.SampleDesc.Count = 1;
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    desc.CPUAccessFlags = 0;
+
+    ID3D11Texture2D* pTexture = NULL;
+    D3D11_SUBRESOURCE_DATA subResource;
+    subResource.pSysMem = image_data;
+    subResource.SysMemPitch = desc.Width * 4;
+    subResource.SysMemSlicePitch = 0;
+    g_pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
+
+    // Create texture view
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    ZeroMemory(&srvDesc, sizeof(srvDesc));
+    srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    srvDesc.Texture2D.MipLevels = desc.MipLevels;
+    srvDesc.Texture2D.MostDetailedMip = 0;
+    g_pd3dDevice->CreateShaderResourceView(pTexture, &srvDesc, out_srv);
+    pTexture->Release();
+
+    *out_width = image_width;
+    *out_height = image_height;
+    stbi_image_free(image_data);
+
+    return true;
+}
 
 bool CreateDeviceD3D(HWND hWnd)
 {
