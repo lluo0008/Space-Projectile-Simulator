@@ -5,6 +5,7 @@
 
 
 #include "imgui.h"
+#include "iostream"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
 #include <d3d11.h>
@@ -17,10 +18,10 @@
 
 
 // Data
-static ID3D11Device*            g_pd3dDevice = NULL;
-static ID3D11DeviceContext*     g_pd3dDeviceContext = NULL;
-static IDXGISwapChain*          g_pSwapChain = NULL;
-static ID3D11RenderTargetView*  g_mainRenderTargetView = NULL;
+static ID3D11Device* g_pd3dDevice = NULL;
+static ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
+static IDXGISwapChain* g_pSwapChain = NULL;
+static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
 
 // Forward declarations of helper functions
 bool CreateDeviceD3D(HWND hWnd);
@@ -86,6 +87,59 @@ int main(int, char**)
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    enum Screen {
+        SCREEN_HOME,
+        SCREEN_JUPITER,
+        SCREEN_MARS,
+        SCREEN_MOON,
+        SCREEN_EARTH
+    };
+
+    int state = SCREEN_HOME;
+    //state 0 = home screen
+    //state 1 = jupiter
+    //state 2 = mars
+    //state 3 = moon
+    //state 4 = earth
+
+    /*
+    ==================== Load Textures ==================== 
+    */
+    ID3D11ShaderResourceView* stars = NULL;
+    int stars_width = 0, stars_height = 0;
+    bool ret = LoadTextureFromFile("assets\\stars.jpg", &stars, &stars_width, &stars_height);
+    IM_ASSERT(ret);
+    
+    // JUPITER
+    ID3D11ShaderResourceView* jupiter = NULL;
+    int jupiter_width = 0, jupiter_height = 0;
+    ret = LoadTextureFromFile("assets/jupiter.png", &jupiter, &jupiter_width, &jupiter_height);
+    IM_ASSERT(ret);
+
+    // MARS
+    ID3D11ShaderResourceView* mars = NULL;
+    int mars_width = 0, mars_height = 0;
+    ret = LoadTextureFromFile("assets/mars.png", &mars, &mars_width, &mars_height);
+    IM_ASSERT(ret);
+
+    // MOON
+    ID3D11ShaderResourceView* moon = NULL;
+    int moon_width = 0, moon_height = 0;
+    ret = LoadTextureFromFile("assets/moon.png", &moon, &moon_width, &moon_height);
+    IM_ASSERT(ret);
+
+    // EARTH
+    ID3D11ShaderResourceView* earth = NULL;
+    int earth_width = 0, earth_height = 0;
+    ret = LoadTextureFromFile("assets/earth.png", &earth, &earth_width, &earth_height);
+    IM_ASSERT(ret);
+
+    // ROCKET
+    ID3D11ShaderResourceView* rocket = NULL;
+    int rocket_width = 0, rocket_height = 0;
+    ret = LoadTextureFromFile("assets/rocket.png", &rocket, &rocket_width, &rocket_height);
+    IM_ASSERT(ret);
+
     // Main loop
     MSG msg;
     ZeroMemory(&msg, sizeof(msg));
@@ -110,110 +164,164 @@ int main(int, char**)
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
+            ImGui::SetNextWindowPos(ImVec2(-10, -10));
+            ImGui::SetNextWindowSize(ImVec2(750, 510), 0);
 
-			int my_image_width = 0;
-			int my_image_height = 0;
-			static int count = 0;
-			ID3D11ShaderResourceView* my_texture = NULL;
-			bool ret = LoadTextureFromFile("background.PNG", &my_texture, &my_image_width, &my_image_height);
-			IM_ASSERT(ret);
+            ImGui::Begin("physics sim", NULL, ImGuiWindowFlags_NoDecoration);
+            ImGui::Image((void*)stars, ImVec2(750, 470));
 
-			ImGui::SetNextWindowPos(ImVec2(-10, -10));
-			ImGui::SetNextWindowSize(ImVec2(800, 500), 0);
+            if (state == SCREEN_HOME)
+            {
+                // Title
+                ImGui::SetCursorPos(ImVec2(300, 40));
+                ImGui::Text("PROJECTILE SIMULATOR");
 
-			ImGui::Begin("physics sim", NULL, 1);
-			ImGui::Image((void*)my_texture, ImVec2(800, 500));
+                // Jupiter TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(400, 80));
+                ImGui::Image(jupiter, ImVec2(jupiter_width, jupiter_height));
+                ImGui::SetCursorPos(ImVec2(510, 410));
+                if (ImGui::Button("jupiter", ImVec2(100, 50)))
+                {
+                    state = SCREEN_JUPITER;
+                }
 
-			ret = LoadTextureFromFile("Jupiter.png", &my_texture, &my_image_width, &my_image_height);
-			IM_ASSERT(ret);
+                // Mars TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(270, 100));
+                ImGui::Image(mars, ImVec2(mars_width * 0.4, mars_height * 0.4));
+                ImGui::SetCursorPos(ImVec2(280, 190));
+                if (ImGui::Button("mars", ImVec2(70, 30)))
+                {
+                    state = SCREEN_MARS;
+                }
 
-			ImGui::SetCursorPos(ImVec2(0, 400));
-			ImGui::Image((void*)my_texture, ImVec2(750, my_image_height));
+                // Moon TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(150, 200));
+                ImGui::Image(moon, ImVec2(moon_width * 0.3, moon_height * 0.3));
+                ImGui::SetCursorPos(ImVec2(135, 250));
+                if (ImGui::Button("moon", ImVec2(70, 30)))
+                {
+                    state = SCREEN_MOON;
+                }
 
-			ImGui::SetCursorPos(ImVec2(350, 440));
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(0, 0, 0)));
+                // Earth TODO add button trigger
+                ImGui::SetCursorPos(ImVec2(30, 270));
+                ImGui::Image(earth, ImVec2(earth_width / 1.5, earth_height / 1.5));
+                ImGui::SetCursorPos(ImVec2(55, 420));
+                if (ImGui::Button("earth", ImVec2(80, 40)))
+                {
+                    state = SCREEN_EARTH;
+                }
 
-			ImGui::Text("Jupiter");
-			ImGui::PopStyleColor();
+                // Rocket Graphic
+                ImGui::SetCursorPos(ImVec2(10, 300));
+                ImGui::Image((void*)rocket, ImVec2(rocket_width * 0.25, rocket_height * 0.25));
+            }
 
-			//display cannon
-			ret = LoadTextureFromFile("cannon.png", &my_texture, &my_image_width, &my_image_height);
-			IM_ASSERT(ret);
+            if (true) {
+                int my_image_width = 0;
+                int my_image_height = 0;
+                static int count = 0;
+                ID3D11ShaderResourceView* my_texture = NULL;
+                bool ret = LoadTextureFromFile("background.PNG", &my_texture, &my_image_width, &my_image_height);
+                IM_ASSERT(ret);
 
-			ImGui::SetCursorPos(ImVec2(0, 350));
-			ImGui::Image((void*)my_texture, ImVec2(my_image_width / 2, my_image_height / 2));
+                ImGui::SetNextWindowPos(ImVec2(-10, -10));
+                ImGui::SetNextWindowSize(ImVec2(800, 500), 0);
 
-			ImGui::SetCursorPos(ImVec2(40, 40));
-			ImGui::Button("Home", ImVec2(75, 30));
+                ImGui::Begin("physics sim", NULL, 1);
+                ImGui::Image((void*)my_texture, ImVec2(800, 500));
 
-			static int selectedProjectile = 0;
+                ret = LoadTextureFromFile("Jupiter.png", &my_texture, &my_image_width, &my_image_height);
+                IM_ASSERT(ret);
 
-			ImGui::SetCursorPos(ImVec2(650, 380));
-			ImGui::Button("Next", ImVec2(75, 30));
-				
+                ImGui::SetCursorPos(ImVec2(0, 400));
+                ImGui::Image((void*)my_texture, ImVec2(750, my_image_height));
 
-			ret = LoadTextureFromFile("square.png", &my_texture, &my_image_width, &my_image_height);
-			IM_ASSERT(ret);
+                ImGui::SetCursorPos(ImVec2(350, 440));
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(0, 0, 0)));
 
-			if (selectedProjectile == 1)
-				ImGui::SetCursorPos(ImVec2(145, 145));
-			else if (selectedProjectile == 2)
-				ImGui::SetCursorPos(ImVec2(320, 145));
-			else if (selectedProjectile == 3)
-				ImGui::SetCursorPos(ImVec2(495, 145));
-			else
-				ImGui::SetCursorPos(ImVec2(1000, 1000));
+                ImGui::Text("Jupiter");
+                ImGui::PopStyleColor();
 
-			ImGui::Image((void*)my_texture, ImVec2(117, 117));
+                //display cannon
+                ret = LoadTextureFromFile("cannon.png", &my_texture, &my_image_width, &my_image_height);
+                IM_ASSERT(ret);
 
-			ret = LoadTextureFromFile("projectile1.png", &my_texture, &my_image_width, &my_image_height);
-			IM_ASSERT(ret);
+                ImGui::SetCursorPos(ImVec2(0, 350));
+                ImGui::Image((void*)my_texture, ImVec2(my_image_width / 2, my_image_height / 2));
 
-			ImGui::SetCursorPos(ImVec2(500, 150));
-			ImGui::ImageButton(my_texture, ImVec2(100, 100));
+                ImGui::SetCursorPos(ImVec2(40, 40));
+                ImGui::Button("Home", ImVec2(75, 30));
 
-			ImGui::SetCursorPos(ImVec2(523, 115));
-			if (ImGui::Button("Select##1", ImVec2(60, 20)))
-				selectedProjectile = 3;
+                static int selectedProjectile = 0;
+
+                ImGui::SetCursorPos(ImVec2(650, 380));
+                ImGui::Button("Next", ImVec2(75, 30));
 
 
-			ImGui::SetCursorPos(ImVec2(500, 275));
-			ImGui::Text("Properties: \n - ... \n - ...");
+                ret = LoadTextureFromFile("square.png", &my_texture, &my_image_width, &my_image_height);
+                IM_ASSERT(ret);
 
-			ret = LoadTextureFromFile("projectile2.png", &my_texture, &my_image_width, &my_image_height);
-			IM_ASSERT(ret);
+                if (selectedProjectile == 1)
+                    ImGui::SetCursorPos(ImVec2(145, 145));
+                else if (selectedProjectile == 2)
+                    ImGui::SetCursorPos(ImVec2(320, 145));
+                else if (selectedProjectile == 3)
+                    ImGui::SetCursorPos(ImVec2(495, 145));
+                else
+                    ImGui::SetCursorPos(ImVec2(1000, 1000));
 
-			ImGui::SetCursorPos(ImVec2(325, 150));
-			ImGui::ImageButton(my_texture, ImVec2(100, 100));
+                ImGui::Image((void*)my_texture, ImVec2(117, 117));
 
-			ImGui::SetCursorPos(ImVec2(347, 115));
-			if (ImGui::Button("Select##2", ImVec2(60, 20)))
-				selectedProjectile = 2;
+                ret = LoadTextureFromFile("projectile1.png", &my_texture, &my_image_width, &my_image_height);
+                IM_ASSERT(ret);
 
-			ImGui::SetCursorPos(ImVec2(325, 275));
-			ImGui::Text("Properties: \n - ... \n - ...");
+                ImGui::SetCursorPos(ImVec2(500, 150));
+                ImGui::ImageButton(my_texture, ImVec2(100, 100));
 
-			ret = LoadTextureFromFile("projectile3.png", &my_texture, &my_image_width, &my_image_height);
-			IM_ASSERT(ret);
+                ImGui::SetCursorPos(ImVec2(523, 115));
+                if (ImGui::Button("Select##1", ImVec2(60, 20)))
+                    selectedProjectile = 3;
 
-			ImGui::SetCursorPos(ImVec2(150, 150));
-			ImGui::ImageButton(my_texture, ImVec2(100, 100));
 
-			ImGui::SetCursorPos(ImVec2(173, 115));
-			if (ImGui::Button("Select##3", ImVec2(60, 20)))
-				selectedProjectile = 1;
+                ImGui::SetCursorPos(ImVec2(500, 275));
+                ImGui::Text("Properties: \n - ... \n - ...");
 
-			ImGui::SetCursorPos(ImVec2(150, 275));
-			ImGui::Text("Properties: \n - ... \n - ...");
+                ret = LoadTextureFromFile("projectile2.png", &my_texture, &my_image_width, &my_image_height);
+                IM_ASSERT(ret);
+
+                ImGui::SetCursorPos(ImVec2(325, 150));
+                ImGui::ImageButton(my_texture, ImVec2(100, 100));
+
+                ImGui::SetCursorPos(ImVec2(347, 115));
+                if (ImGui::Button("Select##2", ImVec2(60, 20)))
+                    selectedProjectile = 2;
+
+                ImGui::SetCursorPos(ImVec2(325, 275));
+                ImGui::Text("Properties: \n - ... \n - ...");
+
+                ret = LoadTextureFromFile("projectile3.png", &my_texture, &my_image_width, &my_image_height);
+                IM_ASSERT(ret);
+
+                ImGui::SetCursorPos(ImVec2(150, 150));
+                ImGui::ImageButton(my_texture, ImVec2(100, 100));
+
+                ImGui::SetCursorPos(ImVec2(173, 115));
+                if (ImGui::Button("Select##3", ImVec2(60, 20)))
+                    selectedProjectile = 1;
+
+                ImGui::SetCursorPos(ImVec2(150, 275));
+                ImGui::Text("Properties: \n - ... \n - ...");
+            }
+			
 
 			
 			//ImGui::SetCursorPos(ImVec2(400, 50));
 			//ImGui::Text("Selected Projectile: %d", selectedProjectile);
 
+            ImGui::End();
 
-			ImGui::End();
-			
-        }
+        }       
 
         // Rendering
         ImGui::Render();
@@ -238,51 +346,50 @@ int main(int, char**)
 }
 
 // Helper functions
-
 bool LoadTextureFromFile(const char* filename, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height)
 {
-	// Load from disk into a raw RGBA buffer
-	int image_width = 0;
-	int image_height = 0;
-	unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
-	if (image_data == NULL)
-		return false;
+    // Load from disk into a raw RGBA buffer
+    int image_width = 0;
+    int image_height = 0;
+    unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
+    if (image_data == NULL)
+        return false;
 
-	// Create texture
-	D3D11_TEXTURE2D_DESC desc;
-	ZeroMemory(&desc, sizeof(desc));
-	desc.Width = image_width;
-	desc.Height = image_height;
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	desc.SampleDesc.Count = 1;
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	desc.CPUAccessFlags = 0;
+    // Create texture
+    D3D11_TEXTURE2D_DESC desc;
+    ZeroMemory(&desc, sizeof(desc));
+    desc.Width = image_width;
+    desc.Height = image_height;
+    desc.MipLevels = 1;
+    desc.ArraySize = 1;
+    desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    desc.SampleDesc.Count = 1;
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    desc.CPUAccessFlags = 0;
 
-	ID3D11Texture2D* pTexture = NULL;
-	D3D11_SUBRESOURCE_DATA subResource;
-	subResource.pSysMem = image_data;
-	subResource.SysMemPitch = desc.Width * 4;
-	subResource.SysMemSlicePitch = 0;
-	g_pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
+    ID3D11Texture2D* pTexture = NULL;
+    D3D11_SUBRESOURCE_DATA subResource;
+    subResource.pSysMem = image_data;
+    subResource.SysMemPitch = desc.Width * 4;
+    subResource.SysMemSlicePitch = 0;
+    g_pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
 
-	// Create texture view
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	ZeroMemory(&srvDesc, sizeof(srvDesc));
-	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = desc.MipLevels;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	g_pd3dDevice->CreateShaderResourceView(pTexture, &srvDesc, out_srv);
-	pTexture->Release();
+    // Create texture view
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    ZeroMemory(&srvDesc, sizeof(srvDesc));
+    srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    srvDesc.Texture2D.MipLevels = desc.MipLevels;
+    srvDesc.Texture2D.MostDetailedMip = 0;
+    g_pd3dDevice->CreateShaderResourceView(pTexture, &srvDesc, out_srv);
+    pTexture->Release();
 
-	*out_width = image_width;
-	*out_height = image_height;
-	stbi_image_free(image_data);
+    *out_width = image_width;
+    *out_height = image_height;
+    stbi_image_free(image_data);
 
-	return true;
+    return true;
 }
 
 bool CreateDeviceD3D(HWND hWnd)

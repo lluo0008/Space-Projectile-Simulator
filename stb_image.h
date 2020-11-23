@@ -2019,7 +2019,7 @@ stbi_inline static int stbi__jpeg_huff_decode(stbi__jpeg* j, stbi__huffman* h)
 
 	// look at the top FAST_BITS and determine what symbol ID it is,
 	// if the code is <= FAST_BITS
-	c = (j->code_buffer >> (32 - FAST_BITS))& ((1 << FAST_BITS) - 1);
+	c = (j->code_buffer >> (32 - FAST_BITS)) & ((1 << FAST_BITS) - 1);
 	k = h->fast[c];
 	if (k < 255) {
 		int s = h->size[k];
@@ -2050,8 +2050,8 @@ stbi_inline static int stbi__jpeg_huff_decode(stbi__jpeg* j, stbi__huffman* h)
 		return -1;
 
 	// convert the huffman code to the symbol id
-	c = ((j->code_buffer >> (32 - k))& stbi__bmask[k]) + h->delta[k];
-	STBI_ASSERT((((j->code_buffer) >> (32 - h->size[c]))& stbi__bmask[h->size[c]]) == h->code[c]);
+	c = ((j->code_buffer >> (32 - k)) & stbi__bmask[k]) + h->delta[k];
+	STBI_ASSERT((((j->code_buffer) >> (32 - h->size[c])) & stbi__bmask[h->size[c]]) == h->code[c]);
 
 	// convert the id to a symbol
 	j->code_bits -= k;
@@ -2142,7 +2142,7 @@ static int stbi__jpeg_decode_block(stbi__jpeg* j, short data[64], stbi__huffman*
 		unsigned int zig;
 		int c, r, s;
 		if (j->code_bits < 16) stbi__grow_buffer_unsafe(j);
-		c = (j->code_buffer >> (32 - FAST_BITS))& ((1 << FAST_BITS) - 1);
+		c = (j->code_buffer >> (32 - FAST_BITS)) & ((1 << FAST_BITS) - 1);
 		r = fac[c];
 		if (r) { // fast-AC path
 			k += (r >> 4) & 15; // run
@@ -2151,7 +2151,8 @@ static int stbi__jpeg_decode_block(stbi__jpeg* j, short data[64], stbi__huffman*
 			j->code_bits -= s;
 			// decode into unzigzag'd location
 			zig = stbi__jpeg_dezigzag[k++];
-			data[zig] = (short)((r >> 8)* dequant[zig]);
+
+			data[zig] = (short)((r >> 8) * dequant[zig]);
 		}
 		else {
 			int rs = stbi__jpeg_huff_decode(j, hac);
@@ -2220,7 +2221,7 @@ static int stbi__jpeg_decode_block_prog_ac(stbi__jpeg* j, short data[64], stbi__
 			unsigned int zig;
 			int c, r, s;
 			if (j->code_bits < 16) stbi__grow_buffer_unsafe(j);
-			c = (j->code_buffer >> (32 - FAST_BITS))& ((1 << FAST_BITS) - 1);
+			c = (j->code_buffer >> (32 - FAST_BITS)) & ((1 << FAST_BITS) - 1);
 			r = fac[c];
 			if (r) { // fast-AC path
 				k += (r >> 4) & 15; // run
@@ -4795,7 +4796,7 @@ static int stbi__create_png_image(stbi__png* a, stbi_uc* image_data, stbi__uint3
 		x = (a->s->img_x - xorig[p] + xspc[p] - 1) / xspc[p];
 		y = (a->s->img_y - yorig[p] + yspc[p] - 1) / yspc[p];
 		if (x && y) {
-			stbi__uint32 img_len = ((((a->s->img_n * x * depth) + 7) >> 3) + 1)* y;
+			stbi__uint32 img_len = ((((a->s->img_n * x * depth) + 7) >> 3) + 1) * y;
 			if (!stbi__create_png_image_raw(a, image_data, image_data_len, out_n, x, y, depth, color)) {
 				STBI_FREE(final);
 				return 0;
@@ -5723,8 +5724,8 @@ static void stbi__tga_read_rgb16(stbi__context* s, stbi_uc* out)
 	stbi__uint16 px = (stbi__uint16)stbi__get16le(s);
 	stbi__uint16 fiveBitMask = 31;
 	// we have 3 channels with 5bits each
-	int r = (px >> 10)& fiveBitMask;
-	int g = (px >> 5)& fiveBitMask;
+	int r = (px >> 10) & fiveBitMask;
+	int g = (px >> 5) & fiveBitMask;
 	int b = px & fiveBitMask;
 	// Note that this saves the data in RGB(A) order, so it doesn't need to be swapped later
 	out[0] = (stbi_uc)((r * 255) / 31);
