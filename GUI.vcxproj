@@ -98,7 +98,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>imgui;imgui\backends;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>imgui;imgui\backends;Backend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -169,6 +169,11 @@
     <Image Include="..\..\..\Downloads\space.png" />
     <Image Include="background.png" />
     <Image Include="Jupiter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Backend\Backend.vcxproj">
+      <Project>{9db095bd-b162-46a1-883e-143c268455af}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,9 +5,15 @@
  * 2020/10/26
  */
 
+#ifdef PROJECTILE_EXPORTS
+#define DLL __declspec(dllexport)
+#else
+#define DLL __declspec(dllimport)
+#endif
+
 #include "DataStructures.h"
 
-class Environment {
+class DLL Environment {
 public:
 
     double AIR_DENSITY;
@@ -42,7 +48,7 @@ private:
 
 using namespace std;
 
-class EnvironmentException {
+class DLL EnvironmentException {
 public:
     /**
     * exception for environment object

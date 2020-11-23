@@ -14,6 +14,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"         // NULL, malloc, free, atoi
 
+#include "ProjectileManager.h"
 
 // Data
 static ID3D11Device* g_pd3dDevice = NULL;
@@ -76,20 +77,23 @@ int main(int, char**)
         SCREEN_LAUNCH
     };
 
-    static int state = SCREEN_HOME;
-    static int planet = 0;
-    static int selectedProjectile = 2; // default state is medium projectile; 
-    static int windSpeed = 7;
+    static int state = SCREEN_HOME;    // init to home screen
+    Environments planet = EARTH;       // default state is Earth
+    Size selectedProjectile = MEDIUM;  // default state is medium projectile; 
+    static int windSpeed = 7;          // default wind speed;
+    Environment* env = new Environment(EARTH, windSpeed);                           // init a placeholder null environment
+    ProjectileManager* manager = new ProjectileManager(env, selectedProjectile);    // init a placeholder null projectilemanager
 
 
     /*
     ==================== Load Textures ==================== 
     */
+    
     ID3D11ShaderResourceView* stars = NULL;
     int stars_width = 0, stars_height = 0;
-    bool ret = LoadTextureFromFile("assets\\stars.jpg", &stars, &stars_width, &stars_height);
+    bool ret = LoadTextureFromFile("assets/stars.jpg", &stars, &stars_width, &stars_height);
     IM_ASSERT(ret);
-    
+
     // JUPITER
     ID3D11ShaderResourceView* jupiter = NULL;
     int jupiter_width = 0, jupiter_height = 0;
@@ -162,7 +166,6 @@ int main(int, char**)
     ret = LoadTextureFromFile("assets/projectile2.png", &projectile, &projectile_height, &projectile_width);
     IM_ASSERT(ret);
 
-
     // Main loop
     MSG msg;
     ZeroMemory(&msg, sizeof(msg));
@@ -206,7 +209,9 @@ int main(int, char**)
                 if (ImGui::Button("jupiter", ImVec2(100, 50)))
                 {
                     state = SCREEN_SELECT;
-                    planet = 3;
+                    planet = JUPITER;
+                    env = new Environment(planet, windSpeed);
+                    manager = new ProjectileManager(env, selectedProjectile);
                 }
 
                 // Mars TODO add button trigger
@@ -216,7 +221,9 @@ int main(int, char**)
                 if (ImGui::Button("mars", ImVec2(70, 30)))
                 {
                     state = SCREEN_SELECT;
-                    planet = 2;
+                    planet = MARS;
+                    env = new Environment(planet, windSpeed);
+                    manager = new ProjectileManager(env, selectedProjectile);
                 }
 
                 // Moon TODO add button trigger
@@ -226,7 +233,9 @@ int main(int, char**)
                 if (ImGui::Button("moon", ImVec2(70, 30)))
                 {
                     state = SCREEN_SELECT;
-                    planet = 1;
+                    planet = MOON;
+                    env = new Environment(planet, windSpeed);
+                    manager = new ProjectileManager(env, selectedProjectile);
                 }
 
                 // Earth TODO add button trigger
@@ -236,7 +245,9 @@ int main(int, char**)
                 if (ImGui::Button("earth", ImVec2(80, 40)))
                 {
                     state = SCREEN_SELECT;
-                    planet = 0;
+                    planet = EARTH;
+                    env = new Environment(planet, windSpeed);
+                    manager = new ProjectileManager(env, selectedProjectile);
                 }
 
                 // Rocket Graphic
@@ -275,15 +286,16 @@ int main(int, char**)
 
                 ImGui::SetCursorPos(ImVec2(650, 380));
                 if (ImGui::Button("Next", ImVec2(75, 30))) {
+                    manager->setProjectileSize(selectedProjectile);
                     state = SCREEN_LAUNCH;
                 }
-
+                 
                 // Highlight selected projectile in red
-                if (selectedProjectile == 1)
+                if (selectedProjectile == SMALL)
                     ImGui::SetCursorPos(ImVec2(145, 145));
-                else if (selectedProjectile == 2)
+                else if (selectedProjectile == MEDIUM)
                     ImGui::SetCursorPos(ImVec2(320, 145));
-                else if (selectedProjectile == 3)
+                else if (selectedProjectile == LARGE)
                     ImGui::SetCursorPos(ImVec2(495, 145));
                 else
                     ImGui::SetCursorPos(ImVec2(1000, 1000));
@@ -295,7 +307,7 @@ int main(int, char**)
 
                 ImGui::SetCursorPos(ImVec2(523, 115));
                 if (ImGui::Button("Select##1", ImVec2(60, 20)))
-                    selectedProjectile = 3;
+                    selectedProjectile = LARGE;
 
                 ImGui::SetCursorPos(ImVec2(500, 275));
                 ImGui::Text("Properties: \n - Radius: 10 \n - Density: 10 \n - Mass: 10");
@@ -307,7 +319,7 @@ int main(int, char**)
 
                 ImGui::SetCursorPos(ImVec2(347, 115));
                 if (ImGui::Button("Select##2", ImVec2(60, 20)))
-                    selectedProjectile = 2;
+                    selectedProjectile = MEDIUM;
 
                 ImGui::SetCursorPos(ImVec2(325, 275));
                 ImGui::Text("Properties: \n - Radius: 5 \n - Density: 5 \n - Mass: 5");
@@ -319,7 +331,7 @@ int main(int, char**)
 
                 ImGui::SetCursorPos(ImVec2(173, 115));
                 if (ImGui::Button("Select##3", ImVec2(60, 20)))
-                    selectedProjectile = 1;
+                    selectedProjectile = SMALL;
 
                 ImGui::SetCursorPos(ImVec2(150, 275));
                 ImGui::Text("Properties: \n - Radius: 1 \n - Density: 1 \n - Mass: 1");
@@ -375,8 +387,14 @@ int main(int, char**)
                 //Launch button
                 ImGui::SetCursorPos(ImVec2(630, 80));
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(225, 44, 3)));
-                ImGui::Button("LAUNCH", ImVec2(85, 40));
+                if (ImGui::Button("LAUNCH", ImVec2(85, 40))) {
+                    manager->launchCurrent();
+                }
                 ImGui::PopStyleColor();
+
+                // Confirm that projectileManager is launching to the vector
+                //ImGui::SetCursorPos(ImVec2(100, 100));
+                //ImGui::Text("PROJ: %d", manager->getLaunchedProjectiles().size());
 
                 //Compare button
                 ImGui::SetCursorPos(ImVec2(640, 130));
@@ -405,8 +423,9 @@ int main(int, char**)
                     if (ImGui::Button("Compare", ImVec2(100, 0))) { ImGui::CloseCurrentPopup(); }
                     ImGui::EndPopup();
                 }
+
+                manager->update();
             }
-		
             ImGui::End();
         }       
 
@@ -424,6 +443,8 @@ int main(int, char**)
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
+    delete env;
+    delete manager;
 
     CleanupDeviceD3D();
     ::DestroyWindow(hwnd);

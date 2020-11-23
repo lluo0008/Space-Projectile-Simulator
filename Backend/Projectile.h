@@ -7,13 +7,18 @@
 *
 **/
 
+#ifdef PROJECTILE_EXPORTS
+#define DLL __declspec(dllexport)
+#else
+#define DLL __declspec(dllimport)
+#endif
 
 #include <vector>
 #include "DataStructures.h"
 
 using namespace std;
 
-class Projectile {
+class DLL Projectile {
 public:
 
         /**
@@ -45,8 +50,9 @@ public:
         * checks if the projectile is active
         * @return the status of the projectile
         */
+
         bool isActive(); // { return active; }
-        bool setActive(bool activity) { active = activity; }
+        void setActive(bool activity) { active = activity; }
 
         /**
          * Stores the ordinary differential equations for the x and y components
