@@ -1,24 +1,25 @@
+#pragma once
+
 /**
  * Lily de Loe
  * 2020/10/26
  */
 
-#ifndef UNTITLED_ENVIRONMENT_H
-#define UNTITLED_ENVIRONMENT_H
-
+#include "DataStructures.h"
 
 class Environment {
 public:
 
-    const double AIR_DENSITY = 1.2;
-    const double G = 9.807;
+    double AIR_DENSITY;
+    double G;
 
     /**
      * Generates an environment object.
-     * @param wind the cross-wind
+     * @param wind the cross-wind 
+     * @param e the environments enum
      * @throws EnvironmentException creates exception if the wind is outside the bounds
      */
-    Environment(double wind);
+    Environment(Environments e, double wind);
 
     /**
      * Provides the wind speed.
@@ -37,4 +38,16 @@ private:
 };
 
 
-#endif //UNTITLED_ENVIRONMENT_H
+#include "iostream"
+
+using namespace std;
+
+class EnvironmentException {
+public:
+    /**
+    * exception for environment object
+    * @param message exception message
+    */
+    EnvironmentException(string message);
+
+};
