@@ -2151,6 +2151,7 @@ static int stbi__jpeg_decode_block(stbi__jpeg* j, short data[64], stbi__huffman*
 			j->code_bits -= s;
 			// decode into unzigzag'd location
 			zig = stbi__jpeg_dezigzag[k++];
+
 			data[zig] = (short)((r >> 8) * dequant[zig]);
 		}
 		else {
