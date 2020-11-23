@@ -2,8 +2,6 @@
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
-
-
 #include "imgui.h"
 #include "iostream"
 #include "imgui_impl_win32.h"
@@ -38,7 +36,7 @@ int main(int, char**)
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
     ::RegisterClassEx(&wc);
-    HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("Physics Simulator"), WS_OVERLAPPEDWINDOW, 100, 100, 750, 500, NULL, NULL, wc.hInstance, NULL);
+    HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("Projectile Simulator"), WS_OVERLAPPEDWINDOW, 100, 100, 750, 500, NULL, NULL, wc.hInstance, NULL);
 
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
@@ -60,27 +58,12 @@ int main(int, char**)
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
+    //ImGui::StyleColorsDark();
+    ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
-
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
 
     // Our state
     bool show_demo_window = true;
@@ -96,6 +79,7 @@ int main(int, char**)
     static int state = SCREEN_HOME;
     static int planet = 0;
     static int selectedProjectile = 2; // default state is medium projectile; 
+    static int windSpeed = 7;
 
 
     /*
@@ -343,6 +327,84 @@ int main(int, char**)
 
                 ImGui::SetCursorPos(ImVec2(400, 50));
                 ImGui::Text("Selected Projectile: %d", selectedProjectile);
+            }
+
+            if (state == SCREEN_LAUNCH) {
+                static int counter = 0;
+
+                // place ground
+                ImGui::SetCursorPos(ImVec2(0, 400));
+                switch (planet) {
+                case 0: ImGui::Image((void*)earth_surface, ImVec2(750, earth_surface_height)); break;
+                case 1: ImGui::Image((void*)moon_surface, ImVec2(750, moon_surface_height)); break;
+                case 2: ImGui::Image((void*)mars_surface, ImVec2(750, mars_surface_height)); break;
+                case 3: ImGui::Image((void*)jupiter_surface, ImVec2(750, jupiter_surface_height)); break;
+                }
+
+                // Planet label
+                ImGui::SetCursorPos(ImVec2(350, 440));
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(0, 0, 0)));
+                switch (planet) {
+                case 0: ImGui::Text("Earth"); break;
+                case 1: ImGui::Text("Moon"); break;
+                case 2: ImGui::Text("Mars"); break;
+                case 3: ImGui::Text("Jupiter"); break;
+                }
+                ImGui::PopStyleColor();
+
+                //display cannon
+                ImGui::SetCursorPos(ImVec2(0, 350));
+                ImGui::Image((void*)cannon, ImVec2(cannon_width / 2, cannon_height / 2));
+
+                //Wind Control
+                ImGui::SetCursorPos(ImVec2(410, 40));
+                ImGui::PushItemWidth(230);
+                ImGui::SliderInt("Wind(m/s)", &windSpeed, -10, 10);            // Edit wind using a slider from -10 to 10
+                ImGui::PopItemWidth();
+
+                //Home button
+                //ImGui::SetCursorPos(ImVec2(40, 40));
+                //ImGui::Button("Home", ImVec2(75, 30));
+
+                //Back button
+                ImGui::SetCursorPos(ImVec2(40, 80));
+                if (ImGui::Button("Back", ImVec2(75, 30))) {
+                    state = SCREEN_SELECT;
+                }
+
+                //Launch button
+                ImGui::SetCursorPos(ImVec2(630, 80));
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(225, 44, 3)));
+                ImGui::Button("LAUNCH", ImVec2(85, 40));
+                ImGui::PopStyleColor();
+
+                //Compare button
+                ImGui::SetCursorPos(ImVec2(640, 130));
+                if (ImGui::Button("Compare", ImVec2(75, 30))) {
+                    ImGui::OpenPopup("Compare Projectile Paths");
+                }
+
+                ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
+                ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+                ImGui::SetNextWindowSize(ImVec2(400, 180));
+                if (ImGui::BeginPopupModal("Compare Projectile Paths"))
+                {
+                    ImGui::Text("Choose the projectiles you want to compare:");
+                    ImGui::Separator();
+                    static bool projectileA = false;
+                    static bool projectileB = false;
+                    static bool projectileC = false;
+                    ImGui::Checkbox("Projectile A", &projectileA);
+                    ImGui::Checkbox("Projectile B", &projectileB);
+                    ImGui::Checkbox("Projectile C", &projectileC);
+
+                    ImGui::Separator();
+                    ImGui::SetCursorPos(ImVec2(100, 150));
+                    if (ImGui::Button("Close", ImVec2(100, 0))) { ImGui::CloseCurrentPopup(); }
+                    ImGui::SameLine();
+                    if (ImGui::Button("Compare", ImVec2(100, 0))) { ImGui::CloseCurrentPopup(); }
+                    ImGui::EndPopup();
+                }
             }
 		
             ImGui::End();

@@ -164,6 +164,12 @@
     <None Include="imgui\misc\natvis\imgui.natvis" />
     <None Include="imgui\examples\README.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Downloads\cannon.png" />
+    <Image Include="..\..\..\Downloads\space.png" />
+    <Image Include="background.png" />
+    <Image Include="Jupiter.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

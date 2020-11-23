@@ -25,7 +25,7 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">
-      <Filter>imgui</Filter>
+      <Filter>sources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -56,5 +56,19 @@
     <None Include="imgui\misc\natvis\imgui.natvis">
       <Filter>sources</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="background.png">
+      <Filter>sources</Filter>
+    </Image>
+    <Image Include="Jupiter.png">
+      <Filter>sources</Filter>
+    </Image>
+    <Image Include="..\..\..\Downloads\cannon.png">
+      <Filter>sources</Filter>
+    </Image>
+    <Image Include="..\..\..\Downloads\space.png">
+      <Filter>sources</Filter>
+    </Image>
   </ItemGroup>
 </Project>
