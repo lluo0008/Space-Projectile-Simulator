@@ -79,6 +79,7 @@ int main(int, char**)
     static int state = SCREEN_HOME;
     static int planet = 0;
     static int selectedProjectile = 2; // default state is medium projectile; 
+    static int windSpeed = 7;
 
 
     /*
@@ -329,52 +330,47 @@ int main(int, char**)
             }
 
             if (state == SCREEN_LAUNCH) {
-                static int i = 7;
                 static int counter = 0;
 
-                int image_width = 0;
-                int image_height = 0;
-                ID3D11ShaderResourceView* my_texture = NULL;
-                bool ret = LoadTextureFromFile("space.png", &my_texture, &image_width, &image_height);
-                IM_ASSERT(ret);
-
-                ImGui::SetNextWindowPos(ImVec2(-10, -10));
-                ImGui::SetNextWindowSize(ImVec2(800, 500), 0);
-                ImGui::Begin("Projectile Simulator", NULL, 1);
-
-                //display space background
-                ImGui::Image((void*)my_texture, ImVec2(800, 500));
-
-                //display jupiter
-                ret = LoadTextureFromFile("Jupiter.png", &my_texture, &image_width, &image_height);
-                IM_ASSERT(ret);
+                // place ground
                 ImGui::SetCursorPos(ImVec2(0, 400));
-                ImGui::Image((void*)my_texture, ImVec2(750, image_height));
+                switch (planet) {
+                case 0: ImGui::Image((void*)earth_surface, ImVec2(750, earth_surface_height)); break;
+                case 1: ImGui::Image((void*)moon_surface, ImVec2(750, moon_surface_height)); break;
+                case 2: ImGui::Image((void*)mars_surface, ImVec2(750, mars_surface_height)); break;
+                case 3: ImGui::Image((void*)jupiter_surface, ImVec2(750, jupiter_surface_height)); break;
+                }
 
+                // Planet label
                 ImGui::SetCursorPos(ImVec2(350, 440));
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(0, 0, 0)));
-                ImGui::Text("Jupiter");
+                switch (planet) {
+                case 0: ImGui::Text("Earth"); break;
+                case 1: ImGui::Text("Moon"); break;
+                case 2: ImGui::Text("Mars"); break;
+                case 3: ImGui::Text("Jupiter"); break;
+                }
                 ImGui::PopStyleColor();
 
                 //display cannon
-                ret = LoadTextureFromFile("cannon.png", &my_texture, &image_width, &image_height);
-                IM_ASSERT(ret);
                 ImGui::SetCursorPos(ImVec2(0, 350));
-                ImGui::Image((void*)my_texture, ImVec2(image_width / 2, image_height / 2));
+                ImGui::Image((void*)cannon, ImVec2(cannon_width / 2, cannon_height / 2));
 
                 //Wind Control
                 ImGui::SetCursorPos(ImVec2(410, 40));
                 ImGui::PushItemWidth(230);
-                ImGui::SliderInt("Wind(m/s)", &i, -10, 10);            // Edit wind using a slider from -10 to 10
+                ImGui::SliderInt("Wind(m/s)", &windSpeed, -10, 10);            // Edit wind using a slider from -10 to 10
                 ImGui::PopItemWidth();
 
                 //Home button
-                ImGui::SetCursorPos(ImVec2(40, 40));
-                ImGui::Button("Home", ImVec2(75, 30));
+                //ImGui::SetCursorPos(ImVec2(40, 40));
+                //ImGui::Button("Home", ImVec2(75, 30));
 
                 //Back button
                 ImGui::SetCursorPos(ImVec2(40, 80));
-                ImGui::Button("Back", ImVec2(75, 30));
+                if (ImGui::Button("Back", ImVec2(75, 30))) {
+                    state = SCREEN_SELECT;
+                }
 
                 //Launch button
                 ImGui::SetCursorPos(ImVec2(630, 80));
@@ -437,53 +433,6 @@ int main(int, char**)
 }
 
 // Helper functions
-bool LoadTextureFromFile(const char* filename, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height)
-{
-    // Load from disk into a raw RGBA buffer
-    int image_width = 0;
-    int image_height = 0;
-    unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
-    if (image_data == NULL)
-        return false;
-
-    // Create texture
-    D3D11_TEXTURE2D_DESC desc;
-    ZeroMemory(&desc, sizeof(desc));
-    desc.Width = image_width;
-    desc.Height = image_height;
-    desc.MipLevels = 1;
-    desc.ArraySize = 1;
-    desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    desc.SampleDesc.Count = 1;
-    desc.Usage = D3D11_USAGE_DEFAULT;
-    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-    desc.CPUAccessFlags = 0;
-
-    ID3D11Texture2D* pTexture = NULL;
-    D3D11_SUBRESOURCE_DATA subResource;
-    subResource.pSysMem = image_data;
-    subResource.SysMemPitch = desc.Width * 4;
-    subResource.SysMemSlicePitch = 0;
-    g_pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
-
-    // Create texture view
-    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-    ZeroMemory(&srvDesc, sizeof(srvDesc));
-    srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    srvDesc.Texture2D.MipLevels = desc.MipLevels;
-    srvDesc.Texture2D.MostDetailedMip = 0;
-    g_pd3dDevice->CreateShaderResourceView(pTexture, &srvDesc, out_srv);
-    pTexture->Release();
-
-    *out_width = image_width;
-    *out_height = image_height;
-    stbi_image_free(image_data);
-
-    return true;
-}
-
-// Simple helper function to load an image into a DX11 texture with common settings
 bool LoadTextureFromFile(const char* filename, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height)
 {
     // Load from disk into a raw RGBA buffer
