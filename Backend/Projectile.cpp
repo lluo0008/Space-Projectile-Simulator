@@ -81,18 +81,18 @@ Projectile::Projectile(Size projectileSize, Colors c, launchParams params)
     drag_coeff = 0.5;
     if (projectileSize == SMALL) {
         radius = 1;
-        density = 1;
-        mass = 1;
+        density = 1900;
+        mass = 0.01;
     }
     else if (projectileSize == MEDIUM) {
         radius = 5;
-        density = 5;
-        mass = 5;
+        density = 1900;
+        mass = 0.1;
     }
     else if (projectileSize == LARGE) {
         radius = 10;
-        density = 10;
-        mass = 10;
+        density = 1900;
+        mass = 1;
     }
     color = c;
     launchedWith = params;

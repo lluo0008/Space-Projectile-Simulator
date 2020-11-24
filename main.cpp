@@ -321,7 +321,7 @@ int main(int, char**)
 				}
 
                 ImGui::SetCursorPos(ImVec2(500, 275));
-                ImGui::Text("Properties: \n - Radius: 10 \n - Density: 10 \n - Mass: 10");
+                ImGui::Text("Properties: \n - Radius: 10 \n - Density: 1900 kg/m^3 \n - Mass: 0.01 kg");
                 // End Large Projectile
 
                 // Begin Medium Projectile
@@ -335,7 +335,7 @@ int main(int, char**)
 				}
 
                 ImGui::SetCursorPos(ImVec2(325, 275));
-                ImGui::Text("Properties: \n - Radius: 5 \n - Density: 5 \n - Mass: 5");
+                ImGui::Text("Properties: \n - Radius: 5 \n - Density: 1900 kg/m^3 \n - Mass: 0.1 kg");
                 // End Medium Projectile
 
                 // Begin Small Projectile
@@ -347,10 +347,9 @@ int main(int, char**)
 					selectedProjectile = SMALL;
 					selectStart = false;
 				}
-                    
 
                 ImGui::SetCursorPos(ImVec2(150, 275));
-                ImGui::Text("Properties: \n - Radius: 1 \n - Density: 1 \n - Mass: 1");
+                ImGui::Text("Properties: \n - Radius: 1 \n - Density: 1900 kg/m^3 \n - Mass: 1 kg");
                 // End Small Projectile
 
 				ImGui::SetCursorPos(ImVec2(300, 50));
@@ -422,6 +421,7 @@ int main(int, char**)
                 ImGui::SetCursorPos(ImVec2(630, 80));
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(225, 44, 3)));
                 if (ImGui::Button("LAUNCH", ImVec2(85, 40))) {
+                    manager->setWindSpeed(windSpeed);
                     manager->launchCurrent();
 					isLaunched = true;
                 }
@@ -459,48 +459,58 @@ int main(int, char**)
                     ImGui::EndPopup();
                 }
 
-				if (isLaunched) {
+				manager->update();
 
-					manager->update();
+				vector<Projectile> projectiles = manager->getLaunchedProjectiles();
 
-					vector<Projectile> projectiles = manager->getLaunchedProjectiles();
+				for (Projectile i : projectiles) {
 
-					for (Projectile i : projectiles) {
+                    ImVec4 color = ImVec4(1, 1, 1, 1);
+                    switch (i.getColor()) {
+                    case RED: color = ImVec4(255, 0, 0, 1); break;
+                    case GREEN: color = ImVec4(0, 255, 0, 1); break;
+                    case BLUE: color = ImVec4(0, 0, 255, 1);  break;
+                    case ORANGE: color = ImVec4(1, 0.27, 0, 1); break;
+                    case YELLOW: color = ImVec4(255, 255, 0, 1); break;
+                    case PINK: color = ImVec4(255, 192, 203, 1); break;
+                    case BLACK: color = ImVec4(0, 0, 0, 1); break;
+                    case WHITE: color = ImVec4(1, 1, 1, 0.5); break;
+                    case PURPLE: color = ImVec4(128, 0, 128, 1); break;
+                    case BROWN: color = ImVec4(96, 75, 0, 1); break;
+                    }
 
-						if (i.getSize() == SMALL) {
+					if (i.getSize() == SMALL) {
 
-							ImGui::SetCursorPos(ImVec2(i.getData().x + 110, 425 - i.getData().y));
-							ImGui::Image(projectile, (ImVec2(20, 20)));
+						ImGui::SetCursorPos(ImVec2(i.getData().x + 110, 425 - i.getData().y));
+                        ImGui::Image(projectile, (ImVec2(20, 20)), ImVec2(0, 0), ImVec2(1, 1), color);
 
-							//Used for testing
-							/*ImGui::SetCursorPos(ImVec2(300, 50));
-							ImGui::Text("x1 = %d", i.getData().x);
-							ImGui::SetCursorPos(ImVec2(300, 100));
-							ImGui::Text("y1 = %d", i.getData().y);*/
+						//Used for testing
+						/*ImGui::SetCursorPos(ImVec2(300, 50));
+						ImGui::Text("x1 = %d", i.getData().x);
+						ImGui::SetCursorPos(ImVec2(300, 100));
+						ImGui::Text("y1 = %d", i.getData().y);*/
 
-						} else if (i.getSize() == MEDIUM) {
+					} else if (i.getSize() == MEDIUM) {
 
-							ImGui::SetCursorPos(ImVec2(i.getData().x + 110, 400 - i.getData().y));
-							ImGui::Image(projectile, (ImVec2(40, 40)));
+						ImGui::SetCursorPos(ImVec2(i.getData().x + 110, 400 - i.getData().y));
+                        ImGui::Image(projectile, (ImVec2(40, 40)), ImVec2(0, 0), ImVec2(1, 1), color);
 
-							//Used for testing
-							/*ImGui::SetCursorPos(ImVec2(300, 50));
-							ImGui::Text("x2 = %d", i.getData().x);
-							ImGui::SetCursorPos(ImVec2(300, 100));
-							ImGui::Text("y2 = %d", i.getData().y);*/
+						//Used for testing
+						/*ImGui::SetCursorPos(ImVec2(300, 50));
+						ImGui::Text("x2 = %d", i.getData().x);
+						ImGui::SetCursorPos(ImVec2(300, 100));
+						ImGui::Text("y2 = %d", i.getData().y);*/
 
-						} else {
+					} else {
 
-							ImGui::SetCursorPos(ImVec2(i.getData().x + 110, 415 - i.getData().y));
-							ImGui::Image(projectile, (ImVec2(60, 60)));
+						ImGui::SetCursorPos(ImVec2(i.getData().x + 110, 415 - i.getData().y));
+                        ImGui::Image(projectile, (ImVec2(60, 60)), ImVec2(0, 0), ImVec2(1, 1), color);
 
-							//Used for testing
-							/*ImGui::SetCursorPos(ImVec2(300, 50));
-							ImGui::Text("x3 = %d", i.getData().x);
-							ImGui::SetCursorPos(ImVec2(300, 100));
-							ImGui::Text("y3 = %d", i.getData().y);*/
-
-						}
+						//Used for testing
+						/*ImGui::SetCursorPos(ImVec2(300, 50));
+						ImGui::Text("x3 = %d", i.getData().x);
+						ImGui::SetCursorPos(ImVec2(300, 100));
+						ImGui::Text("y3 = %d", i.getData().y);*/
 
 					}
 

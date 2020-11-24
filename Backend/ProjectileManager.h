@@ -19,7 +19,7 @@ typedef chrono::milliseconds milliseconds;
 class DLL ProjectileManager {
 private:
 	Size projectileSize;
-	const double dT = 0.05;
+	const double dT = 0.1;
 	launchParams currentParams;
 	vector<Projectile> launchedProjectiles;
 	int colorCounter = 0;
