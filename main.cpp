@@ -83,7 +83,8 @@ int main(int, char**)
     static int windSpeed = 7;          // default wind speed;
     Environment* env = new Environment(EARTH, windSpeed);                           // init a placeholder null environment
     ProjectileManager* manager = new ProjectileManager(env, selectedProjectile);    // init a placeholder null projectilemanager
-
+	bool isLaunched = false;
+	bool selectStart = true;
 
     /*
     ==================== Load Textures ==================== 
@@ -212,6 +213,7 @@ int main(int, char**)
                     planet = JUPITER;
                     env = new Environment(planet, windSpeed);
                     manager = new ProjectileManager(env, selectedProjectile);
+					selectStart = true;
                 }
 
                 // Mars TODO add button trigger
@@ -224,6 +226,7 @@ int main(int, char**)
                     planet = MARS;
                     env = new Environment(planet, windSpeed);
                     manager = new ProjectileManager(env, selectedProjectile);
+					selectStart = true;
                 }
 
                 // Moon TODO add button trigger
@@ -236,6 +239,7 @@ int main(int, char**)
                     planet = MOON;
                     env = new Environment(planet, windSpeed);
                     manager = new ProjectileManager(env, selectedProjectile);
+					selectStart = true;
                 }
 
                 // Earth TODO add button trigger
@@ -248,6 +252,7 @@ int main(int, char**)
                     planet = EARTH;
                     env = new Environment(planet, windSpeed);
                     manager = new ProjectileManager(env, selectedProjectile);
+					selectStart = true;
                 }
 
                 // Rocket Graphic
@@ -286,59 +291,87 @@ int main(int, char**)
 
                 ImGui::SetCursorPos(ImVec2(650, 380));
                 if (ImGui::Button("Next", ImVec2(75, 30))) {
-                    manager->setProjectileSize(selectedProjectile);
-                    state = SCREEN_LAUNCH;
+					if (!selectStart) {
+						manager->setProjectileSize(selectedProjectile);
+						state = SCREEN_LAUNCH;
+					}
                 }
                  
-                // Highlight selected projectile in red
-                if (selectedProjectile == SMALL)
-                    ImGui::SetCursorPos(ImVec2(145, 145));
-                else if (selectedProjectile == MEDIUM)
-                    ImGui::SetCursorPos(ImVec2(320, 145));
-                else if (selectedProjectile == LARGE)
-                    ImGui::SetCursorPos(ImVec2(495, 145));
-                else
-                    ImGui::SetCursorPos(ImVec2(1000, 1000));
-                ImGui::Image((void*)square, ImVec2(117, 117));
+				if (!selectStart) {
+					// Highlight selected projectile in red
+					if (selectedProjectile == SMALL)
+						ImGui::SetCursorPos(ImVec2(145, 145));
+					else if (selectedProjectile == MEDIUM)
+						ImGui::SetCursorPos(ImVec2(320, 145));
+					else if (selectedProjectile == LARGE)
+						ImGui::SetCursorPos(ImVec2(495, 145));
+					else
+						ImGui::SetCursorPos(ImVec2(1000, 1000));
+					ImGui::Image((void*)square, ImVec2(117, 117));
+				}
 
                 // Begin Large Projectile
                 ImGui::SetCursorPos(ImVec2(500, 150));
                 ImGui::Image(projectile, ImVec2(100, 100));
 
                 ImGui::SetCursorPos(ImVec2(523, 115));
-                if (ImGui::Button("Select##1", ImVec2(60, 20)))
-                    selectedProjectile = LARGE;
+				if (ImGui::Button("Select##1", ImVec2(60, 20))) {
+					selectedProjectile = LARGE;
+					selectStart = false;
+				}
 
                 ImGui::SetCursorPos(ImVec2(500, 275));
                 ImGui::Text("Properties: \n - Radius: 10 \n - Density: 10 \n - Mass: 10");
                 // End Large Projectile
 
                 // Begin Medium Projectile
-                ImGui::SetCursorPos(ImVec2(325, 150));
-                ImGui::Image(projectile, ImVec2(100, 100));
+                ImGui::SetCursorPos(ImVec2(347.5, 162.5));
+                ImGui::Image(projectile, ImVec2(75, 75));
 
                 ImGui::SetCursorPos(ImVec2(347, 115));
-                if (ImGui::Button("Select##2", ImVec2(60, 20)))
-                    selectedProjectile = MEDIUM;
+				if (ImGui::Button("Select##2", ImVec2(60, 20))) {
+					selectedProjectile = MEDIUM;
+					selectStart = false;
+				}
 
                 ImGui::SetCursorPos(ImVec2(325, 275));
                 ImGui::Text("Properties: \n - Radius: 5 \n - Density: 5 \n - Mass: 5");
                 // End Medium Projectile
 
                 // Begin Small Projectile
-                ImGui::SetCursorPos(ImVec2(150, 150));
-                ImGui::Image(projectile, ImVec2(100, 100));
+                ImGui::SetCursorPos(ImVec2(195 - 12.5, 195 - 12.5));
+                ImGui::Image(projectile, ImVec2(25, 25));
 
                 ImGui::SetCursorPos(ImVec2(173, 115));
-                if (ImGui::Button("Select##3", ImVec2(60, 20)))
-                    selectedProjectile = SMALL;
+				if (ImGui::Button("Select##3", ImVec2(60, 20))) {
+					selectedProjectile = SMALL;
+					selectStart = false;
+				}
+                    
 
                 ImGui::SetCursorPos(ImVec2(150, 275));
                 ImGui::Text("Properties: \n - Radius: 1 \n - Density: 1 \n - Mass: 1");
                 // End Small Projectile
 
-                ImGui::SetCursorPos(ImVec2(400, 50));
-                ImGui::Text("Selected Projectile: %d", selectedProjectile);
+				ImGui::SetCursorPos(ImVec2(300, 50));
+
+				if (!selectStart) {
+
+					if (selectedProjectile == SMALL)
+						ImGui::Text("Selected Projectile: SMALL");
+					else if (selectedProjectile == MEDIUM)
+						ImGui::Text("Selected Projectile: MEDIUM");
+					else
+						ImGui::Text("Selected Projectile: LARGE");
+
+				}
+				else {
+
+					ImGui::Text("Selected Projectile: NONE");
+
+				}
+
+                
             }
 
             if (state == SCREEN_LAUNCH) {
@@ -382,6 +415,7 @@ int main(int, char**)
                 ImGui::SetCursorPos(ImVec2(40, 80));
                 if (ImGui::Button("Back", ImVec2(75, 30))) {
                     state = SCREEN_SELECT;
+					isLaunched = false;
                 }
 
                 //Launch button
@@ -389,6 +423,7 @@ int main(int, char**)
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(225, 44, 3)));
                 if (ImGui::Button("LAUNCH", ImVec2(85, 40))) {
                     manager->launchCurrent();
+					isLaunched = true;
                 }
                 ImGui::PopStyleColor();
 
@@ -424,7 +459,54 @@ int main(int, char**)
                     ImGui::EndPopup();
                 }
 
-                manager->update();
+				if (isLaunched) {
+
+					manager->update();
+
+					vector<Projectile> projectiles = manager->getLaunchedProjectiles();
+
+					for (Projectile i : projectiles) {
+
+						if (i.getSize() == SMALL) {
+
+							ImGui::SetCursorPos(ImVec2(i.getData().x + 110, 425 - i.getData().y));
+							ImGui::Image(projectile, (ImVec2(20, 20)));
+
+							//Used for testing
+							/*ImGui::SetCursorPos(ImVec2(300, 50));
+							ImGui::Text("x1 = %d", i.getData().x);
+							ImGui::SetCursorPos(ImVec2(300, 100));
+							ImGui::Text("y1 = %d", i.getData().y);*/
+
+						} else if (i.getSize() == MEDIUM) {
+
+							ImGui::SetCursorPos(ImVec2(i.getData().x + 110, 400 - i.getData().y));
+							ImGui::Image(projectile, (ImVec2(40, 40)));
+
+							//Used for testing
+							/*ImGui::SetCursorPos(ImVec2(300, 50));
+							ImGui::Text("x2 = %d", i.getData().x);
+							ImGui::SetCursorPos(ImVec2(300, 100));
+							ImGui::Text("y2 = %d", i.getData().y);*/
+
+						} else {
+
+							ImGui::SetCursorPos(ImVec2(i.getData().x + 110, 415 - i.getData().y));
+							ImGui::Image(projectile, (ImVec2(60, 60)));
+
+							//Used for testing
+							/*ImGui::SetCursorPos(ImVec2(300, 50));
+							ImGui::Text("x3 = %d", i.getData().x);
+							ImGui::SetCursorPos(ImVec2(300, 100));
+							ImGui::Text("y3 = %d", i.getData().y);*/
+
+						}
+
+					}
+
+				}
+				
+				
             }
             ImGui::End();
         }       
