@@ -6,7 +6,7 @@ class Environment;
 
 struct projectileData {
 	double x = 0;
-	double y = 0;
+	double y = 50;
 	double lastX = 0;
 	double lastY = 0;
 	double vx = 0;
@@ -40,7 +40,7 @@ enum Colors {
 
 enum Environments {
 	EARTH,
+	MOON,
 	MARS,
-	JUPITER,
-	MOON
+	JUPITER
 };

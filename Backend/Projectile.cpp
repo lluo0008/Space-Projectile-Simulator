@@ -1,4 +1,4 @@
-/**
+	/**
  * Lily de Loe
  * 2020/10/26
  * revised: 2020/11/16
@@ -96,6 +96,7 @@ Projectile::Projectile(Size projectileSize, Colors c, launchParams params)
     }
     color = c;
     launchedWith = params;
+	size = projectileSize;
 }
 
 
@@ -135,3 +136,9 @@ vector<double> Projectile::getCurrentValues() {
 
     return temp;
 } //getCurrentValues
+
+Size Projectile::getSize() {
+
+	return size;
+
+}

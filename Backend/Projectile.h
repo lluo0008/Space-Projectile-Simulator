@@ -81,6 +81,8 @@ public:
 
         vector<double> getCurrentValues();
 
+		Size getSize();
+
         Colors getColor() { return color;  }
 
 
