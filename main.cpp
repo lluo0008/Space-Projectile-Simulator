@@ -420,7 +420,7 @@ int main(int, char**)
                 //Launch button
                 ImGui::SetCursorPos(ImVec2(630, 80));
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(225, 44, 3)));
-                if (ImGui::Button("LAUNCH", ImVec2(85, 40))) {
+                if (ImGui::Button("LAUNCH", ImVec2(88, 40))) {
                     manager->setWindSpeed(windSpeed);
                     manager->launchCurrent();
 					isLaunched = true;
@@ -432,30 +432,52 @@ int main(int, char**)
                 //ImGui::Text("PROJ: %d", manager->getLaunchedProjectiles().size());
 
                 //Compare button
-                ImGui::SetCursorPos(ImVec2(640, 130));
-                if (ImGui::Button("Compare", ImVec2(75, 30))) {
-                    ImGui::OpenPopup("Compare Projectile Paths");
+                ImGui::SetCursorPos(ImVec2(630, 130));
+                if (ImGui::Button("Planet Info", ImVec2(90, 30))) {
+                    ImGui::OpenPopup("Planet Info");
                 }
 
                 ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
                 ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
                 ImGui::SetNextWindowSize(ImVec2(400, 180));
-                if (ImGui::BeginPopupModal("Compare Projectile Paths"))
+                if (ImGui::BeginPopupModal("Planet Info"))
                 {
-                    ImGui::Text("Choose the projectiles you want to compare:");
-                    ImGui::Separator();
-                    static bool projectileA = false;
-                    static bool projectileB = false;
-                    static bool projectileC = false;
-                    ImGui::Checkbox("Projectile A", &projectileA);
-                    ImGui::Checkbox("Projectile B", &projectileB);
-                    ImGui::Checkbox("Projectile C", &projectileC);
-
-                    ImGui::Separator();
-                    ImGui::SetCursorPos(ImVec2(100, 150));
+                    switch (planet) {
+                    case 0: ImGui::Text("Earth"); 
+                        ImGui::Separator();
+                        ImGui::TextWrapped("Earth's atmosphere is multi-layered, strong, and life-sustaining - it is about 300 miles in thickness. Earth's gravity "
+                            "is about 9.8 m/s.");
+                        break;
+                    case 1: ImGui::Text("Moon"); 
+                        ImGui::Separator();
+                        ImGui::TextWrapped("The moon's gravity is about 1.6 m/s, much weaker than on Earth. Someone who weighs 180lbs on Earth would "
+                            "only weigh 30lbs on the moon. There is a very thin layer of gases on the moon's surface that can almost be considered an atmosphere. ");
+                        break;
+                    case 2: ImGui::Text("Mars"); 
+                        ImGui::Separator();
+                        ImGui::TextWrapped("Mars has a very thin atmosphere, much thinner than Earth. It is still thick enough "
+                            "to support weather, clouds and winds. Dust is a permanent part of the atmosphere - its dust storms are the "
+                            "largest in the solar system, capable of blanketing the entire planet and lasting for months at a time.");
+                        break;
+                    }
+                    ImGui::SetCursorPos(ImVec2(150, 150));
                     if (ImGui::Button("Close", ImVec2(100, 0))) { ImGui::CloseCurrentPopup(); }
-                    ImGui::SameLine();
-                    if (ImGui::Button("Compare", ImVec2(100, 0))) { ImGui::CloseCurrentPopup(); }
+                    ImGui::EndPopup();
+                }
+
+                //Exception for Jupiter
+                if (planet == JUPITER) {
+                    ImGui::OpenPopup("!!!");
+                }
+
+                ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+                ImGui::SetNextWindowSize(ImVec2(400, 200));
+                if (ImGui::BeginPopupModal("!!!"))
+                {
+                    ImGui::TextWrapped("Jupiter is a gas giant - its atmosphere is made up of mostly hydrogen gas and helium gas, like the sun. "
+                        "Jupiter has winds that range from 192mph to 335 mph, and experiences massive and violent storms. Its magnetic field is 16 to 54 times stronger than the magnetic field on Earth. ");
+                    ImGui::Separator();
+                    ImGui::TextWrapped("Due to these extreme conditions, any projectile that we try to launch on Jupiter is vaporized immediately!");
                     ImGui::EndPopup();
                 }
 
