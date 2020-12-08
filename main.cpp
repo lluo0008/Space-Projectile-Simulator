@@ -321,7 +321,7 @@ int main(int, char**)
 				}
 
                 ImGui::SetCursorPos(ImVec2(500, 275));
-                ImGui::Text("Properties: \n - Radius: 10 \n - Density: 1900 kg/m^3 \n - Mass: 0.01 kg");
+                ImGui::Text("Properties: \n - Radius: 10 \n - Density: 1900 kg/m^3 \n - Mass: 1 kg");
                 // End Large Projectile
 
                 // Begin Medium Projectile
@@ -349,7 +349,7 @@ int main(int, char**)
 				}
 
                 ImGui::SetCursorPos(ImVec2(150, 275));
-                ImGui::Text("Properties: \n - Radius: 1 \n - Density: 1900 kg/m^3 \n - Mass: 1 kg");
+                ImGui::Text("Properties: \n - Radius: 1 \n - Density: 1900 kg/m^3 \n - Mass: 0.01 kg");
                 // End Small Projectile
 
 				ImGui::SetCursorPos(ImVec2(300, 50));
